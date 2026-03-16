@@ -1,0 +1,63 @@
+# survivor-fantasy configuration
+# All environment-specific paths and tunable parameters live here.
+# Do not hardcode any of these values in source code.
+# For local overrides, create config.local.yaml (gitignored).
+
+# ── Database ──────────────────────────────────────────────────────────────────
+db_path: "data/survivor.duckdb"
+
+# ── Data Sources ──────────────────────────────────────────────────────────────
+survivoR_exports_path: "data/survivoR_exports/"
+season50_path: "data/season50/"
+features_path: "data/features/"
+
+# ── Season Context ────────────────────────────────────────────────────────────
+current_season: 50
+merge_episode_s50: null
+n_starting_tribes_s50: 3
+
+# ── Frontend Output ───────────────────────────────────────────────────────────
+frontend_data_path: "frontend/data/"
+
+# ── League Configuration ──────────────────────────────────────────────────────
+league:
+  survived_pre_merge_pts: 3
+  survived_post_merge_pts: 6
+  reward_participant_pts: 2
+  reward_first_place_bonus_pts: 1
+  team_immunity_pts: 2
+  team_immunity_first_place_bonus_pts: 1
+  wins_individual_reward_pts: 4
+  wins_individual_immunity_pts: 6
+  gets_idol_clue_pts: 1
+  finds_hidden_idol_pts: 3
+  forced_to_give_idol_pts: 1
+  upgrades_idol_pts: 1
+  plays_idol_successfully_pts: 6
+  voted_out_holding_idol_pts: -6
+  loses_vote_pts: -3
+  super_idol_contribution_pts: 3
+  vote_cancellation_bonus_pts: 1
+  makes_fake_idol_pts: 2
+  fake_idol_played_by_other_pts: 4
+  player_quits_pts: -8
+  medical_removal_pts: 8
+  jury_vote_pts: 10
+  sole_survivor_pts: 20
+  participates_in_summit_pts: 1
+  advantage_removed_pts: -3
+  earns_extra_vote_pts: 3
+  plays_extra_vote_pts: 6
+  shot_in_dark_immunity_pts: 6
+  gifts_boomerang_idol_pts: 1
+  receives_boomerang_idol_pts: 3
+
+# ── Model Parameters ──────────────────────────────────────────────────────────
+model:
+  bayesian_prior_alpha: 8.0
+  bayesian_prior_beta: 1.0
+  historical_seasons: null
+  challenge_min_episodes: 2
+
+# ── Logging ───────────────────────────────────────────────────────────────────
+log_level: "INFO"

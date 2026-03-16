@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "survivor-fantasy"
+version = "0.1.0"
+description = "A general-purpose Survivor data platform and fantasy league analytics engine"
+authors = [{ name = "Jimmy Winslow" }]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "duckdb>=0.10.0",
+    "pandas>=2.0.0",
+    "numpy>=1.26.0",
+    "pydantic>=2.0.0",
+    "pyyaml>=6.0",
+    "click>=8.1.0",
+    # Survival analysis
+    "lifelines>=0.27.0",
+    # Network analysis
+    "networkx>=3.0",
+    # Visualization
+    "matplotlib>=3.8.0",
+    "seaborn>=0.13.0",
+    "plotly>=5.18.0",
+    # NLP (Phase 4)
+    "anthropic>=0.20.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.1.0",
+    "ipykernel>=6.0",
+    "jupyter>=1.0",
+]
+
+[project.scripts]
+# CLI entry points — run from anywhere once installed
+sf-ingest = "survivor_fantasy.pipeline.ingest:main"
+sf-ingest-s50 = "survivor_fantasy.pipeline.ingest_s50:main"
+sf-build = "survivor_fantasy.pipeline.features:main"
+sf-score = "survivor_fantasy.pipeline.scorer:main"
+sf-publish = "survivor_fantasy.pipeline.publish:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=survivor_fantasy --cov-report=term-missing"

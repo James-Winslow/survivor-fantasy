@@ -1,0 +1,56 @@
+# Database — rebuild locally with `make build`
+data/survivor.duckdb
+data/survivor.duckdb.wal
+
+# Generated feature parquets — rebuilt by pipeline
+data/features/
+
+# survivoR exports — downloaded locally, documented in README
+data/survivoR_exports/
+
+# Season 50 live data — local only, not committed
+data/season50/
+
+# Frontend build outputs
+frontend/data/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets / config overrides
+.env
+config.local.yaml
+
+# R session files
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+*.Rproj
+
+# R notebook outputs
+*.nb.html

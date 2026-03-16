@@ -1,0 +1,148 @@
+---
+title: "survivoR Package Exploration"
+author: "Jimmy Winslow"
+date: "`r Sys.Date()`"
+output: html_notebook
+---
+
+# survivoR Data Exploration
+
+One-time exploration of the `survivoR` R package to understand available
+datasets, column names, row counts, and data quality before building the
+Python ingestion pipeline.
+
+## Setup
+```{r setup}
+library(survivoR)
+library(readr)
+```
+
+## Load All Datasets
+```{r load}
+data(season_summary)
+data(castaways)
+data(castaway_details)
+data(vote_history)
+data(challenge_results)
+data(challenge_description)
+data(advantage_details)
+data(advantage_movement)
+data(confessionals)
+data(tribe_colours)
+data(tribe_mapping)
+data(boot_order)
+data(jury_votes)
+data(episodes)
+```
+
+## Data Availability Check
+```{r availability}
+cat("=== Row Counts ===\n\n")
+cat("season_summary:       ", nrow(season_summary), "\n")
+cat("castaways:            ", nrow(castaways), "\n")
+cat("castaway_details:     ", nrow(castaway_details), "\n")
+cat("vote_history:         ", nrow(vote_history), "\n")
+cat("challenge_results:    ", nrow(challenge_results), "\n")
+cat("challenge_description:", nrow(challenge_description), "\n")
+cat("advantage_details:    ", nrow(advantage_details), "\n")
+cat("advantage_movement:   ", nrow(advantage_movement), "\n")
+cat("confessionals:        ", nrow(confessionals), "\n")
+cat("tribe_colours:        ", nrow(tribe_colours), "\n")
+cat("tribe_mapping:        ", nrow(tribe_mapping), "\n")
+cat("boot_order:           ", nrow(boot_order), "\n")
+cat("jury_votes:           ", nrow(jury_votes), "\n")
+cat("episodes:             ", nrow(episodes), "\n")
+
+cat("\n=== Season Coverage ===\n\n")
+cat("castaways:    S", min(castaways$season), "to S", max(castaways$season), "\n")
+cat("vote_history: S", min(vote_history$season), "to S", max(vote_history$season), "\n")
+cat("tribe_mapping:S", min(tribe_mapping$season), "to S", max(tribe_mapping$season), "\n")
+```
+
+## Column Names
+```{r columns}
+cat("season_summary:       ", paste(names(season_summary), collapse=", "), "\n\n")
+cat("castaways:            ", paste(names(castaways), collapse=", "), "\n\n")
+cat("castaway_details:     ", paste(names(castaway_details), collapse=", "), "\n\n")
+cat("vote_history:         ", paste(names(vote_history), collapse=", "), "\n\n")
+cat("challenge_results:    ", paste(names(challenge_results), collapse=", "), "\n\n")
+cat("challenge_description:", paste(names(challenge_description), collapse=", "), "\n\n")
+cat("advantage_details:    ", paste(names(advantage_details), collapse=", "), "\n\n")
+cat("advantage_movement:   ", paste(names(advantage_movement), collapse=", "), "\n\n")
+cat("confessionals:        ", paste(names(confessionals), collapse=", "), "\n\n")
+cat("tribe_colours:        ", paste(names(tribe_colours), collapse=", "), "\n\n")
+cat("tribe_mapping:        ", paste(names(tribe_mapping), collapse=", "), "\n\n")
+cat("boot_order:           ", paste(names(boot_order), collapse=", "), "\n\n")
+cat("jury_votes:           ", paste(names(jury_votes), collapse=", "), "\n\n")
+cat("episodes:             ", paste(names(episodes), collapse=", "), "\n\n")
+```
+
+## Key Observations
+```{r observations}
+# Season 50 castaways already present
+cat("S50 castaways:", nrow(castaways[castaways$season == 50,]), "\n")
+
+# Vote history only through S49
+cat("Max season in vote_history:", max(vote_history$season), "\n")
+
+# tribe_mapping is our tribe_memberships table
+cat("tribe_mapping columns:", paste(names(tribe_mapping), collapse=", "), "\n")
+cat("This is our tribe_memberships table — player x episode x tribe grain\n")
+
+# challenge_description has 40+ component flags
+challenge_cols <- names(challenge_description)
+component_cols <- challenge_cols[!challenge_cols %in% 
+  c("version","version_season","season","episode","challenge_id",
+    "challenge_number","challenge_type","name","recurring_name",
+    "all_names","description","reward","additional_stipulation")]
+cat("\nChallenge component flags (", length(component_cols), "):\n")
+cat(paste(component_cols, collapse=", "), "\n")
+```
+
+## Schema Mapping Notes
+```{r mapping_notes}
+# Document how survivoR datasets map to our DB tables
+notes <- c(
+  "season_summary      -> seasons table",
+  "castaways           -> players table (game outcome fields)",
+  "castaway_details    -> players table (demographic fields)",
+  "tribe_colours       -> tribes table",
+  "tribe_mapping       -> tribe_memberships table (already episode-grain!)",
+  "episodes            -> episodes table",
+  "vote_history        -> votes + tribal_councils tables",
+  "challenge_results   -> challenge_participants table",
+  "challenge_description -> challenges table",
+  "advantage_details   -> advantages table (type/location/conditions)",
+  "advantage_movement  -> advantages table (lifecycle events)",
+  "confessionals       -> confessionals table",
+  "jury_votes          -> advantages + player outcome fields",
+  "boot_order          -> supplements castaways boot_episode field"
+)
+cat(paste(notes, collapse="\n"), "\n")
+```
+
+## Export to CSV
+```{r export}
+out_dir <- "data/survivoR_exports"
+dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+
+write_csv(season_summary,        file.path(out_dir, "season_summary.csv"))
+write_csv(castaways,             file.path(out_dir, "castaways.csv"))
+write_csv(castaway_details,      file.path(out_dir, "castaway_details.csv"))
+write_csv(vote_history,          file.path(out_dir, "vote_history.csv"))
+write_csv(challenge_results,     file.path(out_dir, "challenge_results.csv"))
+write_csv(challenge_description, file.path(out_dir, "challenge_description.csv"))
+write_csv(advantage_details,     file.path(out_dir, "advantage_details.csv"))
+write_csv(advantage_movement,    file.path(out_dir, "advantage_movement.csv"))
+write_csv(confessionals,         file.path(out_dir, "confessionals.csv"))
+write_csv(tribe_colours,         file.path(out_dir, "tribe_colours.csv"))
+write_csv(tribe_mapping,         file.path(out_dir, "tribe_mapping.csv"))
+write_csv(boot_order,            file.path(out_dir, "boot_order.csv"))
+write_csv(jury_votes,            file.path(out_dir, "jury_votes.csv"))
+write_csv(episodes,              file.path(out_dir, "episodes.csv"))
+
+cat("Export complete. Files:\n")
+for (f in list.files(out_dir)) {
+    cat(" ", f, "-", file.size(file.path(out_dir, f)), "bytes\n")
+}
+```
