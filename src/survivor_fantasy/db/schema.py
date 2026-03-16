@@ -1,13 +1,13 @@
 """
 DDL for all database tables and indexes.
 
-Layer 1 — Survivor Data Platform (show facts, no league context)
+Layer 1 â€” Survivor Data Platform (show facts, no league context)
   Core:     seasons, players, tribe_memberships, tribes, episodes,
             tribal_councils, votes, challenges, challenge_participants,
             advantages, confessionals, confessional_text
   Computed: alliance_index, player_season_stats
 
-Layer 2 — Fantasy League Application
+Layer 2 â€” Fantasy League Application
   league_players, league_rosters, episode_scores, league_standings
 
 Design principles:
@@ -15,17 +15,17 @@ Design principles:
   - Layer 2 references Layer 1 via foreign keys only.
   - All DDL is idempotent (CREATE TABLE IF NOT EXISTS).
   - Tables are created in dependency order.
-  - Constraints are explicit — bad data fails loudly at insert time.
+  - Constraints are explicit â€” bad data fails loudly at insert time.
   - Every FK and every column appearing in WHERE/JOIN has an index.
   - Computed tables (alliance_index, player_season_stats) are rebuilt
     by pipeline/features.py and never manually edited.
-  - confessional_text is a Phase 4 placeholder — empty until NLP work begins.
+  - confessional_text is a Phase 4 placeholder â€” empty until NLP work begins.
 """
 
 from survivor_fantasy.db.connect import get_connection
 
 # =============================================================================
-# LAYER 1 — CORE TABLES
+# LAYER 1 â€” CORE TABLES
 # =============================================================================
 
 CREATE_SEASONS = """
@@ -46,8 +46,8 @@ CREATE TABLE IF NOT EXISTS seasons (
         CHECK (format IN ('classic', 'new_era', 'returnees', 'mixed', 'unknown')),
     era                     VARCHAR
         CHECK (era IN ('original', 'hd', 'new_era'))
-        -- original: S1–S20 (39 days, classic structure)
-        -- hd:       S21–S40 (39 days, modern production)
+        -- original: S1â€“S20 (39 days, classic structure)
+        -- hd:       S21â€“S40 (39 days, modern production)
         -- new_era:  S41+    (26 days, revised advantage system)
     ,
     day_count               INTEGER,        -- 26 (new era) or 39 (classic)
@@ -60,6 +60,11 @@ CREATE TABLE IF NOT EXISTS seasons (
 
 CREATE_PLAYERS = """
 CREATE TABLE IF NOT EXISTS players (
+    -- player_id is a COMPOSITE KEY string: "{castaway_id}_S{season_num}"
+    -- e.g. "US0009_S1" = Richard Hatch in S1, "US0009_S8" = Richard in All-Stars
+    -- Ensures uniqueness for returnees while preserving survivoR traceability.
+    -- To recover base castaway_id:  SPLIT_PART(player_id, '_S', 1)
+    -- To find all seasons a player played: GROUP BY SPLIT_PART(player_id, '_S', 1)
     player_id               VARCHAR PRIMARY KEY,
     season_id               INTEGER NOT NULL REFERENCES seasons(season_id),
     full_name               VARCHAR NOT NULL,
@@ -84,7 +89,7 @@ CREATE TABLE IF NOT EXISTS players (
 
     -- Physical profile
     -- Used by challenge prediction model.
-    -- Nullable — backfill from public sources where available.
+    -- Nullable â€” backfill from public sources where available.
     height_cm               FLOAT,
     weight_kg               FLOAT,
     -- Manually assigned composite tier (1=low, 2=mid, 3=high physical threat)
@@ -197,7 +202,7 @@ CREATE TABLE IF NOT EXISTS votes (
 
 CREATE_CHALLENGES = """
 CREATE TABLE IF NOT EXISTS challenges (
-    challenge_id            INTEGER PRIMARY KEY,
+    challenge_id            VARCHAR PRIMARY KEY,
     episode_id              INTEGER NOT NULL REFERENCES episodes(episode_id),
     season_id               INTEGER NOT NULL REFERENCES seasons(season_id),
     challenge_name          VARCHAR,
@@ -211,7 +216,7 @@ CREATE TABLE IF NOT EXISTS challenges (
             'knowledge', 'hybrid', 'social', 'unknown'
         )),
     -- Secondary format flags for multi-component challenges
-    -- Most modern challenges are hybrid — these allow granular breakdown
+    -- Most modern challenges are hybrid â€” these allow granular breakdown
     has_physical_component  BOOLEAN DEFAULT FALSE,
     has_puzzle_component    BOOLEAN DEFAULT FALSE,
     has_endurance_component BOOLEAN DEFAULT FALSE,
@@ -229,7 +234,7 @@ CREATE TABLE IF NOT EXISTS challenges (
 CREATE_CHALLENGE_PARTICIPANTS = """
 CREATE TABLE IF NOT EXISTS challenge_participants (
     id                      INTEGER PRIMARY KEY,
-    challenge_id            INTEGER NOT NULL REFERENCES challenges(challenge_id),
+    challenge_id            VARCHAR NOT NULL REFERENCES challenges(challenge_id),
     player_id               VARCHAR NOT NULL REFERENCES players(player_id),
     season_id               INTEGER NOT NULL REFERENCES seasons(season_id),
     tribe_id                VARCHAR REFERENCES tribes(tribe_id),
@@ -305,7 +310,7 @@ CREATE TABLE IF NOT EXISTS confessional_text (
     season_id               INTEGER NOT NULL REFERENCES seasons(season_id),
     confessional_num        INTEGER,        -- order within episode for this player
     raw_text                TEXT,
-    -- NLP outputs — populated by nlp/confessionals.py
+    -- NLP outputs â€” populated by nlp/confessionals.py
     sentiment_score         FLOAT,          -- -1 (negative) to +1 (positive)
     agency_score            FLOAT,          -- passive to active framing
     loyalty_score           FLOAT,          -- expressed loyalty to named allies
@@ -315,7 +320,7 @@ CREATE TABLE IF NOT EXISTS confessional_text (
 """
 
 # =============================================================================
-# LAYER 1 — COMPUTED TABLES (rebuilt by features.py)
+# LAYER 1 â€” COMPUTED TABLES (rebuilt by features.py)
 # =============================================================================
 
 CREATE_ALLIANCE_INDEX = """
@@ -395,7 +400,7 @@ CREATE TABLE IF NOT EXISTS player_season_stats (
 """
 
 # =============================================================================
-# LAYER 2 — FANTASY LEAGUE APPLICATION
+# LAYER 2 â€” FANTASY LEAGUE APPLICATION
 # =============================================================================
 
 CREATE_LEAGUE_PLAYERS = """
@@ -462,7 +467,7 @@ INDEXES = [
     "CREATE INDEX IF NOT EXISTS idx_players_placement ON players(placement)",
     "CREATE INDEX IF NOT EXISTS idx_players_season_placement ON players(season_id, placement)",
 
-    # tribe_memberships — critical for "player's tribe at episode N"
+    # tribe_memberships â€” critical for "player's tribe at episode N"
     "CREATE INDEX IF NOT EXISTS idx_tm_player ON tribe_memberships(player_id)",
     "CREATE INDEX IF NOT EXISTS idx_tm_tribe ON tribe_memberships(tribe_id)",
     "CREATE INDEX IF NOT EXISTS idx_tm_season ON tribe_memberships(season_id)",
@@ -486,7 +491,7 @@ INDEXES = [
     "CREATE INDEX IF NOT EXISTS idx_tc_type ON tribal_councils(tc_type)",
     "CREATE INDEX IF NOT EXISTS idx_tc_season_type ON tribal_councils(season_id, tc_type)",
 
-    # votes — highest query volume table
+    # votes â€” highest query volume table
     "CREATE INDEX IF NOT EXISTS idx_votes_tc ON votes(tc_id)",
     "CREATE INDEX IF NOT EXISTS idx_votes_season ON votes(season_id)",
     "CREATE INDEX IF NOT EXISTS idx_votes_episode ON votes(episode_id)",
@@ -532,12 +537,12 @@ INDEXES = [
     "CREATE INDEX IF NOT EXISTS idx_conf_season ON confessionals(season_id)",
     "CREATE INDEX IF NOT EXISTS idx_conf_player_season ON confessionals(player_id, season_id)",
 
-    # confessional_text (Phase 4 — sparse, but index player/episode for joins)
+    # confessional_text (Phase 4 â€” sparse, but index player/episode for joins)
     "CREATE INDEX IF NOT EXISTS idx_ct_player ON confessional_text(player_id)",
     "CREATE INDEX IF NOT EXISTS idx_ct_episode ON confessional_text(episode_id)",
     "CREATE INDEX IF NOT EXISTS idx_ct_season ON confessional_text(season_id)",
 
-    # alliance_index — heavy join target for network analysis
+    # alliance_index â€” heavy join target for network analysis
     "CREATE INDEX IF NOT EXISTS idx_ai_player_a ON alliance_index(player_a_id)",
     "CREATE INDEX IF NOT EXISTS idx_ai_player_b ON alliance_index(player_b_id)",
     "CREATE INDEX IF NOT EXISTS idx_ai_episode ON alliance_index(episode_id)",
@@ -579,7 +584,7 @@ INDEXES = [
 ]
 
 # =============================================================================
-# TABLE REGISTRY — ordered by dependency
+# TABLE REGISTRY â€” ordered by dependency
 # =============================================================================
 
 LAYER_1_CORE_TABLES: list[str] = [
@@ -670,7 +675,7 @@ def drop_all_tables(conn=None) -> None:
         conn = get_connection()
 
     for table in DROP_ORDER:
-        conn.execute(f"DROP TABLE IF EXISTS {table} CASCADE")
+        conn.execute(f"DROP TABLE IF EXISTS {table}")
         print(f"  Dropped: {table}")
 
     if close_after:
@@ -718,7 +723,7 @@ if __name__ == "__main__":
     get_table_info()
 
 # =============================================================================
-# LAYER 1 — EXTENDED STORY TABLES
+# LAYER 1 â€” EXTENDED STORY TABLES
 # Added to support post-season data, trajectory analysis,
 # external assessments, and visualization metadata.
 # =============================================================================
@@ -750,7 +755,7 @@ CREATE TABLE IF NOT EXISTS player_pregame_profiles (
 CREATE_PLAYER_POSTSEASON_STATEMENTS = """
 CREATE TABLE IF NOT EXISTS player_postseason_statements (
     -- Post-season revelations from interviews, podcasts, social media, AMAs.
-    -- The "dark matter" layer — things that happened but weren't shown.
+    -- The "dark matter" layer â€” things that happened but weren't shown.
     -- Raw text goes here; NLP outputs are populated by nlp/confessionals.py.
     id                          INTEGER PRIMARY KEY,
     player_id                   VARCHAR NOT NULL REFERENCES players(player_id),
@@ -844,7 +849,7 @@ CREATE TABLE IF NOT EXISTS social_media_posts (
     post_url                    VARCHAR UNIQUE,
     post_date                   TIMESTAMP,
     raw_text                    TEXT,
-    -- Engagement (nullable — not always scrapeable)
+    -- Engagement (nullable â€” not always scrapeable)
     likes                       INTEGER,
     comments                    INTEGER,
     shares                      INTEGER,
@@ -901,7 +906,7 @@ CREATE TABLE IF NOT EXISTS player_archetypes (
 CREATE_PLAYER_TRAJECTORIES = """
 CREATE TABLE IF NOT EXISTS player_trajectories (
     -- Pre-computed trajectory state vector for each player at each episode.
-    -- One row per player per episode — the full multidimensional state
+    -- One row per player per episode â€” the full multidimensional state
     -- that defines where a player is in their arc at that moment.
     -- Built by features.py, used for sequence similarity / DTW analysis.
     -- Enables "find historical players who were in a similar position."
@@ -969,7 +974,7 @@ CREATE TABLE IF NOT EXISTS visualization_metadata (
     node_opacity                FLOAT DEFAULT 1.0,  -- fades on elimination
     is_eliminated               BOOLEAN DEFAULT FALSE,
 
-    -- Storytelling flags — moments worth surfacing in UI/TikTok
+    -- Storytelling flags â€” moments worth surfacing in UI/TikTok
     is_anomaly                  BOOLEAN DEFAULT FALSE,  -- something unusual happened
     anomaly_description         VARCHAR,    -- "received 11th vote, still survived"
     story_beat_type             VARCHAR
@@ -1002,7 +1007,7 @@ CREATE TABLE IF NOT EXISTS scrape_log (
 );
 """
 
-# ── Extended indexes ───────────────────────────────────────────────────────────
+# â”€â”€ Extended indexes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 EXTENDED_INDEXES = [
     # player_pregame_profiles
@@ -1048,7 +1053,7 @@ EXTENDED_INDEXES = [
     "CREATE INDEX IF NOT EXISTS idx_pt_threat ON player_trajectories(threat_percentile)",
     "CREATE INDEX IF NOT EXISTS idx_pt_centrality ON player_trajectories(alliance_centrality)",
     "CREATE INDEX IF NOT EXISTS idx_pt_survived ON player_trajectories(survived_this_episode)",
-    # Trajectory similarity queries — need fast scans on state vectors
+    # Trajectory similarity queries â€” need fast scans on state vectors
     "CREATE INDEX IF NOT EXISTS idx_pt_merge_status ON player_trajectories(merge_status, episode_num)",
 
     # visualization_metadata
@@ -1089,10 +1094,22 @@ DROP_ORDER.extend([
     "player_external_assessments",
     "player_postseason_statements",
     "player_pregame_profiles",
+    "confessional_text",
+    "confessionals",
+    "advantages",
+    "challenge_participants",
+    "challenges",
+    "votes",
+    "tribal_councils",
+    "episodes",
+    "tribe_memberships",
+    "tribes",
+    "players",
+    "seasons",
 ])
 
 # =============================================================================
-# COLLABORATIVE DATA LAYER — submission queue
+# COLLABORATIVE DATA LAYER â€” submission queue
 # =============================================================================
 
 CREATE_SUBMISSION_QUEUE = """

@@ -161,10 +161,12 @@ TABLES: dict[str, TableMeta] = {
         role="dimension",
         grain="One row per castaway per season. Returning players have multiple rows.",
         description=(
-            "Most-referenced table in the schema. player_id uses the survivoR "
-            "castaway_id string (e.g. 'US0001') for traceability. Physical profile "
-            "fields are nullable and manually backfilled. archetype_label is a "
-            "Phase 4 enrichment — leave null until the classifier runs."
+            "Most-referenced table in the schema. player_id is a COMPOSITE KEY "
+            "string: '{castaway_id}_S{season_num}' (e.g. 'US0009_S1' for Richard "
+            "Hatch in S1, 'US0009_S8' for Richard in All-Stars). This ensures "
+            "uniqueness for returnees while preserving survivoR traceability. "
+            "To recover the base castaway_id: SPLIT_PART(player_id, '_S', 1). "
+            "Physical profile fields are nullable. archetype_label is Phase 4."
         ),
         centrality="high",
         row_count_estimate="~800 rows (16-20 per season × 50 seasons)",

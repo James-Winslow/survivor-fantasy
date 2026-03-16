@@ -1,7 +1,6 @@
 """
 DuckDB connection factory.
-Reads db_path from config.yaml. All pipeline modules import from here —
-no other module should open a DuckDB connection directly.
+Reads db_path from config.yaml. All pipeline modules import from here.
 """
 import duckdb
 import yaml
