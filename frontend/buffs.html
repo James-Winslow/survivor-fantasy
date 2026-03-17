@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>In the Buffs League — Survivor 50 Fantasy</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Source+Sans+3:wght@300;400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0B2E2E;
+  --surface:   #123F3F;
+  --surface2:  #0F3535;
+  --border:    #2A4A4A;
+  --text:      #E8E3D9;
+  --text-mute: #B8B1A3;
+  --stone:     #5F6F73;
+  --gold:      #D4AF37;
+  --gold-dim:  rgba(212,175,55,0.12);
+  --ember:     #E4572E;
+  --lagoon:    #2E86AB;
+  --palm:      #3FA34D;
+  --purple:    #7A3E9D;
+  --gold-glow: rgba(212,175,55,0.15);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Source Sans 3', sans-serif;
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* Header */
+header {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left h1 {
+  font-family: 'Cinzel', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+}
+
+.header-left .subtitle {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--stone);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.nav-pills { display: flex; gap: 10px; }
+
+.nav-pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 7px 18px;
+  border-radius: 100px;
+  text-decoration: none;
+  border: 1px solid;
+  transition: all 0.2s;
+}
+
+.nav-pill.active {
+  background: var(--gold);
+  color: var(--bg);
+  border-color: var(--gold);
+  font-weight: 500;
+}
+
+.nav-pill.inactive {
+  color: var(--stone);
+  border-color: var(--border);
+}
+
+.nav-pill.inactive:hover {
+  color: var(--text);
+  border-color: var(--stone);
+}
+
+/* Episode bar */
+.episode-bar {
+  background: linear-gradient(90deg, var(--ember) 0%, #C0391F 100%);
+  color: #fff;
+  text-align: center;
+  padding: 7px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Main */
+main {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 44px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+/* Section */
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+}
+
+.section-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--stone);
+}
+
+/* Leaderboard */
+.leaderboard { display: flex; flex-direction: column; gap: 6px; }
+
+.lb-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 20px;
+  display: grid;
+  grid-template-columns: 40px 1fr auto auto;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.18s;
+  animation: slideIn 0.4s ease both;
+}
+
+.lb-row:hover {
+  border-color: var(--gold);
+  background: var(--gold-dim);
+  transform: translateX(3px);
+}
+
+.lb-row.rank-1 { border-left: 3px solid var(--gold); }
+.lb-row.rank-2 { border-left: 3px solid var(--stone); }
+.lb-row.rank-3 { border-left: 3px solid #C9956A; }
+
+.lb-rank {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--stone);
+  text-align: center;
+}
+.lb-rank.gold { color: var(--gold); font-weight: 500; }
+.lb-rank.silver { color: #AAA; }
+.lb-rank.bronze { color: #C9956A; }
+
+.lb-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.lb-ep-pts {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--stone);
+}
+
+.lb-total {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--gold);
+  min-width: 72px;
+  text-align: right;
+}
+
+/* Chart */
+.chart-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px;
+}
+
+#historyChart { width: 100%; height: 300px; }
+
+/* Breakdown table */
+.breakdown-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+table.breakdown {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.87rem;
+}
+
+table.breakdown th {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--stone);
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+
+table.breakdown td {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-mute);
+}
+
+table.breakdown tr:last-child td { border-bottom: none; }
+
+table.breakdown tr:hover td {
+  background: var(--gold-dim);
+  color: var(--text);
+}
+
+.td-manager {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.td-pts {
+  font-family: 'DM Mono', monospace;
+  text-align: right;
+}
+
+.pts-pos { color: var(--palm); }
+.pts-neg { color: var(--ember); }
+.pts-total { color: var(--gold); font-weight: 500; }
+
+/* Roster grid */
+.roster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.roster-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  animation: fadeUp 0.45s ease both;
+  transition: border-color 0.2s;
+}
+
+.roster-card:hover { border-color: var(--gold); }
+
+.rc-header {
+  padding: 12px 16px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rc-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+}
+
+.rc-total {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-mute);
+}
+
+.rc-survivor {
+  padding: 9px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.83rem;
+  transition: background 0.15s;
+}
+
+.rc-survivor:last-child { border-bottom: none; }
+.rc-survivor:hover { background: var(--gold-dim); }
+
+.rc-survivor.eliminated .sv-name {
+  color: var(--stone);
+  text-decoration: line-through;
+  text-decoration-color: var(--ember);
+}
+
+.sv-name { color: var(--text-mute); }
+
+.sv-pts {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.sv-pts.zero { color: var(--stone); }
+
+/* Animations */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--stone);
+  letter-spacing: 0.08em;
+  border-top: 1px solid var(--border);
+}
+
+/* Disclaimer */
+.disclaimer-bar {
+  background: rgba(212,175,55,0.08);
+  border-bottom: 1px solid rgba(212,175,55,0.25);
+  color: var(--text-mute);
+  text-align: center;
+  padding: 9px 24px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>In the Buffs League</h1>
+    <div class="subtitle">Survivor 50 · Fantasy Dashboard</div>
+  </div>
+  <div class="nav-pills">
+    <a href="buffs.html" class="nav-pill active">In the Buffs</a>
+    <a href="fjv.html" class="nav-pill inactive">FJV Heads</a>
+  </div>
+</header>
+
+<div class="episode-bar" id="episodeBar">Loading...</div>
+
+<div class="disclaimer-bar">
+  ⚠ Scores currently reflect all 8 roster picks per manager. Active/bench tracking (5 starters score, 3 bench do not) is in development — scores will be adjusted once that data is captured.
+</div>
+
+<main>
+  <section>
+    <div class="section-header">
+      <span class="section-title">Standings</span>
+      <span class="section-tag">After latest episode</span>
+    </div>
+    <div class="leaderboard" id="leaderboard"></div>
+  </section>
+
+  <section>
+    <div class="section-header">
+      <span class="section-title">Points Over Time</span>
+      <span class="section-tag">Cumulative by episode</span>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="historyChart"></canvas>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-header">
+      <span class="section-title">Episode Breakdown</span>
+      <span class="section-tag">Points per episode per manager</span>
+    </div>
+    <div class="breakdown-wrap">
+      <table class="breakdown">
+        <thead id="bkHead"></thead>
+        <tbody id="bkBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-header">
+      <span class="section-title">Rosters</span>
+      <span class="section-tag">Per-survivor points · strikethrough = eliminated</span>
+    </div>
+    <div class="roster-grid" id="rosterGrid"></div>
+  </section>
+</main>
+
+<footer>Survivor 50 Fantasy · Scoring by survivor-fantasy pipeline · Updated after each episode</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+// ── Embedded data (generated by publish.py) ──────────────────────────────────
+const ALL_DATA = {"episodes": [{"episode_id": 50001, "episode_num": 1, "title": "Epic Party", "air_date": "2026-02-25"}, {"episode_id": 50002, "episode_num": 2, "title": "Therapy Carousel", "air_date": "2026-03-04"}, {"episode_id": 50003, "episode_num": 3, "title": "Did You Vote For a Swap?", "air_date": "2026-03-11"}], "leagues": {"In the Buffs League": {"standings": [{"rank": 1, "manager": "Amy", "cumulative_pts": 141, "episode_pts": 48}, {"rank": 2, "manager": "Jimmy Winslow", "cumulative_pts": 136, "episode_pts": 50}, {"rank": 3, "manager": "Chris Roth", "cumulative_pts": 132, "episode_pts": 46}, {"rank": 4, "manager": "Natalie Bailey", "cumulative_pts": 129, "episode_pts": 52}, {"rank": 5, "manager": "Lo", "cumulative_pts": 122, "episode_pts": 50}, {"rank": 6, "manager": "Lindsay Beaty", "cumulative_pts": 119, "episode_pts": 28}, {"rank": 7, "manager": "The Merpenters", "cumulative_pts": 112, "episode_pts": 46}, {"rank": 8, "manager": "Joe", "cumulative_pts": 105, "episode_pts": 35}, {"rank": 9, "manager": "rachel fagan", "cumulative_pts": 94, "episode_pts": 31}], "history": [{"manager": "Amy", "points_by_episode": [{"episode_id": 50001, "cumulative_pts": 48, "episode_pts": 48}, {"episode_id": 50002, "cumulative_pts": 93, "episode_pts": 45}, {"episode_id": 50003, "cumulative_pts": 141, "episode_pts": 48}]}, {"manager": "Chris Roth", "points_by_episode": [{"episode_id": 50001, "cumulative_pts": 43, "episode_pts": 43}, {"episode_id": 50002, "cumulative_pts": 86, "episode_pts": 43}, {"episode_id": 50003, "cumulative_pts": 132, "episode_pts": 46}]}, {"manager": "Jimmy Winslow", "points_by_episode": [{"episode_id": 50001, "cumulative_pts": 43, "episode_pts": 43}, {"episode_id": 50002, "cumulative_pts": 86, "episode_pts": 43}, {"episode_id": 50003, "cumulative_pts": 136, "episode_pts": 50}]}, {"manager": "Joe", "points_by_episode": [{"episode_id": 50001, "cumulative_pts": 40, "episode_pts": 40}, {"episode_id": 50002, "cumulative_pts": 70, "episode_pts": 30}, {"episode_id": 50003, "cumulative_pts": 105, "episode_pts": 35}]}, {"manager": "Lindsay Beaty", "points_by_episode": [{"episode_id": 50001, "cumulative_pts": 46, "episode_pts": 46}, {"episode_id": 50002, "cumulative_pts": 91, "episode_pts": 45}, {"episode_id": 50003, "cumulative_pts": 119, "episode_pts": 28}]}, {"manager": "Lo", "points_by_episode": [{"episode_id": 50001, "cumulative_pts": 34, "episode_pts": 34}, {"episode_id": 50002, "cumulative_pts": 72, "episode_pts": 38}, {"episode_id": 50003, "cumulative_pts": 122, "episode_pts": 50}]}, {"manager": "Natalie Bailey", "points_by_episode": [{"episode_id": 50001, "cumulative_pts": 37, "episode_pts": 37}, {"episode_id": 50002, "cumulative_pts": 77, "episode_pts": 40}, {"episode_id": 50003, "cumulative_pts": 129, "episode_pts": 52}]}, {"manager": "The Merpenters", "points_by_episode": [{"episode_id": 50001, "cumulative_pts": 33, "episode_pts": 33}, {"episode_id": 50002, "cumulative_pts": 66, "episode_pts": 33}, {"episode_id": 50003, "cumulative_pts": 112, "episode_pts": 46}]}, {"manager": "rachel fagan", "points_by_episode": [{"episode_id": 50001, "cumulative_pts": 36, "episode_pts": 36}, {"episode_id": 50002, "cumulative_pts": 63, "episode_pts": 27}, {"episode_id": 50003, "cumulative_pts": 94, "episode_pts": 31}]}], "rosters": [{"manager": "Amy", "survivors": [{"name": "Charlie Davis", "player_id": "US0682_S50", "total_pts": 27, "eliminated": true}, {"name": "Genevieve Mushaluk", "player_id": "US0703_S50", "total_pts": 26, "eliminated": true}, {"name": "Kamilla Karthigesu", "player_id": "US0724_S50", "total_pts": 20, "eliminated": true}, {"name": "Colby Donaldson", "player_id": "US0031_S50", "total_pts": 16, "eliminated": true}, {"name": "Rick Devens", "player_id": "US0560_S50", "total_pts": 15, "eliminated": true}, {"name": "Mike White", "player_id": "US0555_S50", "total_pts": 14, "eliminated": true}, {"name": "Christian Hubicki", "player_id": "US0550_S50", "total_pts": 12, "eliminated": true}, {"name": "Joe Hunter", "player_id": "US0722_S50", "total_pts": 11, "eliminated": true}]}, {"manager": "Chris Roth", "survivors": [{"name": "Aubry Bracco", "player_id": "US0477_S50", "total_pts": 24, "eliminated": true}, {"name": "Stephenie LaGrossa", "player_id": "US0144_S50", "total_pts": 21, "eliminated": true}, {"name": "Dee Valladares", "player_id": "US0666_S50", "total_pts": 20, "eliminated": true}, {"name": "Colby Donaldson", "player_id": "US0031_S50", "total_pts": 16, "eliminated": true}, {"name": "Cirie Fields", "player_id": "US0179_S50", "total_pts": 15, "eliminated": true}, {"name": "Rizo Velovic", "player_id": "US0745_S50", "total_pts": 15, "eliminated": true}, {"name": "Mike White", "player_id": "US0555_S50", "total_pts": 14, "eliminated": true}, {"name": "Oscar Lusth", "player_id": "US0201_S50", "total_pts": 7, "eliminated": true}]}, {"manager": "Jimmy Winslow", "survivors": [{"name": "Charlie Davis", "player_id": "US0682_S50", "total_pts": 27, "eliminated": true}, {"name": "Genevieve Mushaluk", "player_id": "US0703_S50", "total_pts": 26, "eliminated": true}, {"name": "Dee Valladares", "player_id": "US0666_S50", "total_pts": 20, "eliminated": true}, {"name": "Jonathan Young", "player_id": "US0615_S50", "total_pts": 20, "eliminated": true}, {"name": "Rick Devens", "player_id": "US0560_S50", "total_pts": 15, "eliminated": true}, {"name": "Christian Hubicki", "player_id": "US0550_S50", "total_pts": 12, "eliminated": true}, {"name": "Emily Flippen", "player_id": "US0668_S50", "total_pts": 9, "eliminated": true}, {"name": "Oscar Lusth", "player_id": "US0201_S50", "total_pts": 7, "eliminated": true}]}, {"manager": "Joe", "survivors": [{"name": "Genevieve Mushaluk", "player_id": "US0703_S50", "total_pts": 26, "eliminated": true}, {"name": "Jonathan Young", "player_id": "US0615_S50", "total_pts": 20, "eliminated": true}, {"name": "Colby Donaldson", "player_id": "US0031_S50", "total_pts": 16, "eliminated": true}, {"name": "Benjamin Wade", "player_id": "US0277_S50", "total_pts": 16, "eliminated": true}, {"name": "Christian Hubicki", "player_id": "US0550_S50", "total_pts": 12, "eliminated": true}, {"name": "Joe Hunter", "player_id": "US0722_S50", "total_pts": 11, "eliminated": true}, {"name": "Oscar Lusth", "player_id": "US0201_S50", "total_pts": 7, "eliminated": true}, {"name": "Savannah Louie", "player_id": "US0747_S50", "total_pts": -3, "eliminated": true}]}, {"manager": "Lindsay Beaty", "survivors": [{"name": "Angelina Keeley", "player_id": "US0554_S50", "total_pts": 21, "eliminated": true}, {"name": "Stephenie LaGrossa", "player_id": "US0144_S50", "total_pts": 21, "eliminated": true}, {"name": "Jonathan Young", "player_id": "US0615_S50", "total_pts": 20, "eliminated": true}, {"name": "Benjamin Wade", "player_id": "US0277_S50", "total_pts": 16, "eliminated": true}, {"name": "Tiffany Nicole Ervin", "player_id": "US0695_S50", "total_pts": 16, "eliminated": true}, {"name": "Emily Flippen", "player_id": "US0668_S50", "total_pts": 9, "eliminated": true}, {"name": "Q Burdette", "player_id": "US0691_S50", "total_pts": 9, "eliminated": true}, {"name": "Oscar Lusth", "player_id": "US0201_S50", "total_pts": 7, "eliminated": true}]}, {"manager": "Lo", "survivors": [{"name": "Aubry Bracco", "player_id": "US0477_S50", "total_pts": 24, "eliminated": true}, {"name": "Dee Valladares", "player_id": "US0666_S50", "total_pts": 20, "eliminated": true}, {"name": "Rizo Velovic", "player_id": "US0745_S50", "total_pts": 15, "eliminated": true}, {"name": "Rick Devens", "player_id": "US0560_S50", "total_pts": 15, "eliminated": true}, {"name": "Cirie Fields", "player_id": "US0179_S50", "total_pts": 15, "eliminated": true}, {"name": "Mike White", "player_id": "US0555_S50", "total_pts": 14, "eliminated": true}, {"name": "Christian Hubicki", "player_id": "US0550_S50", "total_pts": 12, "eliminated": true}, {"name": "Oscar Lusth", "player_id": "US0201_S50", "total_pts": 7, "eliminated": true}]}, {"manager": "Natalie Bailey", "survivors": [{"name": "Aubry Bracco", "player_id": "US0477_S50", "total_pts": 24, "eliminated": true}, {"name": "Dee Valladares", "player_id": "US0666_S50", "total_pts": 20, "eliminated": true}, {"name": "Jonathan Young", "player_id": "US0615_S50", "total_pts": 20, "eliminated": true}, {"name": "Chrissy Hofbeck", "player_id": "US0515_S50", "total_pts": 16, "eliminated": true}, {"name": "Cirie Fields", "player_id": "US0179_S50", "total_pts": 15, "eliminated": true}, {"name": "Rick Devens", "player_id": "US0560_S50", "total_pts": 15, "eliminated": true}, {"name": "Christian Hubicki", "player_id": "US0550_S50", "total_pts": 12, "eliminated": true}, {"name": "Oscar Lusth", "player_id": "US0201_S50", "total_pts": 7, "eliminated": true}]}, {"manager": "The Merpenters", "survivors": [{"name": "Jonathan Young", "player_id": "US0615_S50", "total_pts": 20, "eliminated": true}, {"name": "Tiffany Nicole Ervin", "player_id": "US0695_S50", "total_pts": 16, "eliminated": true}, {"name": "Rizo Velovic", "player_id": "US0745_S50", "total_pts": 15, "eliminated": true}, {"name": "Rick Devens", "player_id": "US0560_S50", "total_pts": 15, "eliminated": true}, {"name": "Mike White", "player_id": "US0555_S50", "total_pts": 14, "eliminated": true}, {"name": "Christian Hubicki", "player_id": "US0550_S50", "total_pts": 12, "eliminated": true}, {"name": "Joe Hunter", "player_id": "US0722_S50", "total_pts": 11, "eliminated": true}, {"name": "Emily Flippen", "player_id": "US0668_S50", "total_pts": 9, "eliminated": true}]}, {"manager": "rachel fagan", "survivors": [{"name": "Jonathan Young", "player_id": "US0615_S50", "total_pts": 20, "eliminated": true}, {"name": "Colby Donaldson", "player_id": "US0031_S50", "total_pts": 16, "eliminated": true}, {"name": "Cirie Fields", "player_id": "US0179_S50", "total_pts": 15, "eliminated": true}, {"name": "Mike White", "player_id": "US0555_S50", "total_pts": 14, "eliminated": true}, {"name": "Christian Hubicki", "player_id": "US0550_S50", "total_pts": 12, "eliminated": true}, {"name": "Joe Hunter", "player_id": "US0722_S50", "total_pts": 11, "eliminated": true}, {"name": "Q Burdette", "player_id": "US0691_S50", "total_pts": 9, "eliminated": true}, {"name": "Savannah Louie", "player_id": "US0747_S50", "total_pts": -3, "eliminated": true}]}]}, "FJV Survivor Heads League": {"standings": [{"rank": 1, "manager": "Alec Hartman", "cumulative_pts": 143, "episode_pts": 36}, {"rank": 2, "manager": "Austin Dickman", "cumulative_pts": 140, "episode_pts": 52}, {"rank": 3, "manager": "Jimmy Winslow", "cumulative_pts": 136, "episode_pts": 50}, {"rank": 4, "manager": "Kaitlynn Durham", "cumulative_pts": 131, "episode_pts": 52}, {"rank": 5, "manager": "Sidney", "cumulative_pts": 111, "episode_pts": 39}], "history": [{"manager": "Alec Hartman", "points_by_episode": [{"episode_id": 50001, "cumulative_pts": 54, "episode_pts": 54}, {"episode_id": 50002, "cumulative_pts": 107, "episode_pts": 53}, {"episode_id": 50003, "cumulative_pts": 143, "episode_pts": 36}]}, {"manager": "Austin Dickman", "points_by_episode": [{"episode_id": 50001, "cumulative_pts": 45, "episode_pts": 45}, {"episode_id": 50002, "cumulative_pts": 88, "episode_pts": 43}, {"episode_id": 50003, "cumulative_pts": 140, "episode_pts": 52}]}, {"manager": "Jimmy Winslow", "points_by_episode": [{"episode_id": 50001, "cumulative_pts": 43, "episode_pts": 43}, {"episode_id": 50002, "cumulative_pts": 86, "episode_pts": 43}, {"episode_id": 50003, "cumulative_pts": 136, "episode_pts": 50}]}, {"manager": "Kaitlynn Durham", "points_by_episode": [{"episode_id": 50001, "cumulative_pts": 40, "episode_pts": 40}, {"episode_id": 50002, "cumulative_pts": 79, "episode_pts": 39}, {"episode_id": 50003, "cumulative_pts": 131, "episode_pts": 52}]}, {"manager": "Sidney", "points_by_episode": [{"episode_id": 50001, "cumulative_pts": 36, "episode_pts": 36}, {"episode_id": 50002, "cumulative_pts": 72, "episode_pts": 36}, {"episode_id": 50003, "cumulative_pts": 111, "episode_pts": 39}]}], "rosters": [{"manager": "Alec Hartman", "survivors": [{"name": "Charlie Davis", "player_id": "US0682_S50", "total_pts": 27, "eliminated": true}, {"name": "Genevieve Mushaluk", "player_id": "US0703_S50", "total_pts": 26, "eliminated": true}, {"name": "Angelina Keeley", "player_id": "US0554_S50", "total_pts": 21, "eliminated": true}, {"name": "Stephenie LaGrossa", "player_id": "US0144_S50", "total_pts": 21, "eliminated": true}, {"name": "Colby Donaldson", "player_id": "US0031_S50", "total_pts": 16, "eliminated": true}, {"name": "Christian Hubicki", "player_id": "US0550_S50", "total_pts": 12, "eliminated": true}, {"name": "Joe Hunter", "player_id": "US0722_S50", "total_pts": 11, "eliminated": true}, {"name": "Emily Flippen", "player_id": "US0668_S50", "total_pts": 9, "eliminated": true}]}, {"manager": "Austin Dickman", "survivors": [{"name": "Charlie Davis", "player_id": "US0682_S50", "total_pts": 27, "eliminated": true}, {"name": "Genevieve Mushaluk", "player_id": "US0703_S50", "total_pts": 26, "eliminated": true}, {"name": "Kamilla Karthigesu", "player_id": "US0724_S50", "total_pts": 20, "eliminated": true}, {"name": "Cirie Fields", "player_id": "US0179_S50", "total_pts": 15, "eliminated": true}, {"name": "Rizo Velovic", "player_id": "US0745_S50", "total_pts": 15, "eliminated": true}, {"name": "Mike White", "player_id": "US0555_S50", "total_pts": 14, "eliminated": true}, {"name": "Christian Hubicki", "player_id": "US0550_S50", "total_pts": 12, "eliminated": true}, {"name": "Joe Hunter", "player_id": "US0722_S50", "total_pts": 11, "eliminated": true}]}, {"manager": "Jimmy Winslow", "survivors": [{"name": "Charlie Davis", "player_id": "US0682_S50", "total_pts": 27, "eliminated": true}, {"name": "Genevieve Mushaluk", "player_id": "US0703_S50", "total_pts": 26, "eliminated": true}, {"name": "Jonathan Young", "player_id": "US0615_S50", "total_pts": 20, "eliminated": true}, {"name": "Dee Valladares", "player_id": "US0666_S50", "total_pts": 20, "eliminated": true}, {"name": "Rick Devens", "player_id": "US0560_S50", "total_pts": 15, "eliminated": true}, {"name": "Christian Hubicki", "player_id": "US0550_S50", "total_pts": 12, "eliminated": true}, {"name": "Emily Flippen", "player_id": "US0668_S50", "total_pts": 9, "eliminated": true}, {"name": "Oscar Lusth", "player_id": "US0201_S50", "total_pts": 7, "eliminated": true}]}, {"manager": "Kaitlynn Durham", "survivors": [{"name": "Genevieve Mushaluk", "player_id": "US0703_S50", "total_pts": 26, "eliminated": true}, {"name": "Kamilla Karthigesu", "player_id": "US0724_S50", "total_pts": 20, "eliminated": true}, {"name": "Dee Valladares", "player_id": "US0666_S50", "total_pts": 20, "eliminated": true}, {"name": "Tiffany Nicole Ervin", "player_id": "US0695_S50", "total_pts": 16, "eliminated": true}, {"name": "Cirie Fields", "player_id": "US0179_S50", "total_pts": 15, "eliminated": true}, {"name": "Rick Devens", "player_id": "US0560_S50", "total_pts": 15, "eliminated": true}, {"name": "Christian Hubicki", "player_id": "US0550_S50", "total_pts": 12, "eliminated": true}, {"name": "Oscar Lusth", "player_id": "US0201_S50", "total_pts": 7, "eliminated": true}]}, {"manager": "Sidney", "survivors": [{"name": "Angelina Keeley", "player_id": "US0554_S50", "total_pts": 21, "eliminated": true}, {"name": "Dee Valladares", "player_id": "US0666_S50", "total_pts": 20, "eliminated": true}, {"name": "Kamilla Karthigesu", "player_id": "US0724_S50", "total_pts": 20, "eliminated": true}, {"name": "Cirie Fields", "player_id": "US0179_S50", "total_pts": 15, "eliminated": true}, {"name": "Mike White", "player_id": "US0555_S50", "total_pts": 14, "eliminated": true}, {"name": "Christian Hubicki", "player_id": "US0550_S50", "total_pts": 12, "eliminated": true}, {"name": "Emily Flippen", "player_id": "US0668_S50", "total_pts": 9, "eliminated": true}, {"name": "Jenna Lewis", "player_id": "US0009_S50", "total_pts": 0, "eliminated": true}]}]}}};
+const LEAGUE   = "In the Buffs League";
+
+// ── Chart colors ──────────────────────────────────────────────────────────────
+const COLORS = [
+  '#D4AF37','#2E86AB','#3FA34D','#E4572E','#7A3E9D',
+  '#E8B86D','#5BC0EB','#9BC53D','#FA8C16','#C084FC'
+];
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+function init() {
+  const episodes = ALL_DATA.episodes || [];
+  const leagueData = ALL_DATA.leagues?.[LEAGUE] || {};
+  const standings = leagueData.standings || [];
+  const history   = leagueData.history   || [];
+  const rosters   = leagueData.rosters   || [];
+
+  const latestEp = episodes[episodes.length - 1];
+  document.getElementById('episodeBar').textContent = latestEp
+    ? `Through Episode ${latestEp.episode_num}: "${latestEp.title}"`
+    : 'Survivor 50';
+
+  renderLeaderboard(standings);
+  renderChart(history, episodes);
+  renderBreakdown(history, episodes, standings);
+  renderRosters(rosters, standings);
+}
+
+function renderLeaderboard(standings) {
+  const rankClass = r => r === 1 ? 'gold' : r === 2 ? 'silver' : r === 3 ? 'bronze' : '';
+  document.getElementById('leaderboard').innerHTML = standings.map((s, i) => `
+    <div class="lb-row rank-${s.rank}" style="animation-delay:${i*0.05}s">
+      <div class="lb-rank ${rankClass(s.rank)}">${s.rank}</div>
+      <div class="lb-name">${s.manager}</div>
+      <div class="lb-ep-pts">+${s.episode_pts} this ep</div>
+      <div class="lb-total">${s.cumulative_pts} pts</div>
+    </div>
+  `).join('');
+}
+
+function renderChart(history, episodes) {
+  const labels = episodes.map(e => `Ep ${e.episode_num}`);
+  const datasets = history.map((m, i) => ({
+    label: m.manager,
+    data: m.points_by_episode.map(p => p.cumulative_pts),
+    borderColor: COLORS[i % COLORS.length],
+    backgroundColor: 'transparent',
+    borderWidth: 2.5,
+    pointRadius: 5,
+    pointHoverRadius: 7,
+    tension: 0.35,
+  }));
+  new Chart(document.getElementById('historyChart'), {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { font: { family: 'DM Mono', size: 11 }, color: '#B8B1A3', boxWidth: 14 } },
+        tooltip: { backgroundColor: '#0B2E2E', borderColor: '#2A4A4A', borderWidth: 1,
+                    titleFont: { family: 'DM Mono', size: 11 }, bodyFont: { family: 'DM Mono', size: 11 }, padding: 10 }
+      },
+      scales: {
+        x: { grid: { color: '#1A4A4A' }, ticks: { font: { family: 'DM Mono', size: 11 }, color: '#5F6F73' } },
+        y: { grid: { color: '#1A4A4A' }, ticks: { font: { family: 'DM Mono', size: 11 }, color: '#5F6F73' } }
+      }
+    }
+  });
+}
+
+function renderBreakdown(history, episodes, standings) {
+  const rankMap = {};
+  standings.forEach(s => rankMap[s.manager] = s.rank);
+  const sorted = [...history].sort((a,b) => (rankMap[a.manager]||99) - (rankMap[b.manager]||99));
+
+  document.getElementById('bkHead').innerHTML = `<tr>
+    <th>Manager</th>
+    ${episodes.map(e => `<th style="text-align:right">Ep ${e.episode_num}</th>`).join('')}
+    <th style="text-align:right">Total</th>
+  </tr>`;
+
+  document.getElementById('bkBody').innerHTML = sorted.map(m => {
+    const total = m.points_by_episode.reduce((s,p) => s + p.episode_pts, 0);
+    const cells = episodes.map((e, i) => {
+      const pts = m.points_by_episode[i]?.episode_pts;
+      const val = pts !== undefined ? pts : '—';
+      const cls = typeof pts === 'number' ? (pts >= 0 ? 'pts-pos' : 'pts-neg') : '';
+      return `<td class="td-pts ${cls}" style="text-align:right">${val}</td>`;
+    }).join('');
+    return `<tr>
+      <td class="td-manager">${m.manager}</td>
+      ${cells}
+      <td class="td-pts pts-total" style="text-align:right;font-weight:600">${total}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderRosters(rosters, standings) {
+  const rankMap = {};
+  standings.forEach(s => rankMap[s.manager] = s.rank);
+  const sorted = [...rosters].sort((a,b) => (rankMap[a.manager]||99) - (rankMap[b.manager]||99));
+
+  document.getElementById('rosterGrid').innerHTML = sorted.map((m, i) => {
+    const total = standings.find(s => s.manager === m.manager)?.cumulative_pts || 0;
+    const survivors = m.survivors.map(s => `
+      <div class="rc-survivor${s.eliminated ? ' eliminated' : ''}">
+        <span class="sv-name">${s.name}</span>
+        <span class="sv-pts${s.total_pts === 0 ? ' zero' : ''}">${s.total_pts} pts</span>
+      </div>
+    `).join('');
+    return `
+      <div class="roster-card" style="animation-delay:${i*0.06}s">
+        <div class="rc-header">
+          <span class="rc-name">${m.manager}</span>
+          <span class="rc-total">${total} pts total</span>
+        </div>
+        ${survivors}
+      </div>
+    `;
+  }).join('');
+}
+
+init();
+</script>
+</body>
+</html>
