@@ -17,7 +17,7 @@ from pathlib import Path
 from survivor_fantasy.db.connect import get_connection, load_config
 
 SEASON_ID  = 50
-OUTPUT_DIR = Path("frontend")
+OUTPUT_DIR = Path("docs")
 
 LEAGUE_CONFIGS = [
     {
