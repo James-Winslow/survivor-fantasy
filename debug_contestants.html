@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <title>Tribal-Council</title>
+
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,400,600,700">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Oswald:400,300,700">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/summernote/0.8.4/summernote.css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/js/libs/css/ui-lightness/jquery-ui-1.9.2.custom.min.css">
+  <link rel="stylesheet" href="/js/plugins/select2/select2.css">
+  <link rel="stylesheet" href="/js/plugins/simplecolorpicker/jquery.simplecolorpicker.css">
+  <link rel="stylesheet" href="/js/plugins/fileupload/bootstrap-fileupload.css">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- App CSS -->
+  <link rel="stylesheet" href="/css/target-admin.css?v=0.1.3">
+  <link rel="stylesheet" href="/css/custom.css?v=1.2.9">
+  
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+
+  <div class="navbar">
+
+  <div class="container">
+
+    <div class="navbar-header">
+
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <i class="fa fa-cogs"></i>
+      </button>
+
+      <a class="navbar-brand navbar-brand-image" href="/">
+        <img src="/img/logo_tc.png" alt="Site Logo">
+      </a>
+
+    </div> <!-- /.navbar-header -->
+
+    <div class="navbar-collapse collapse">
+
+
+
+      
+
+      <ul class="nav navbar-nav navbar-right">
+
+
+          
+          
+                    <li>
+    
+    <a data-toggle="modal" href="#promoModal">
+      <i class="fa fa-gamepad"></i> 
+      &nbsp;&nbsp;Donate
+    </a>
+  </li>
+          <li>
+            <a data-toggle="modal" href="#supportModal">
+              <i class="fa fa-envelope"></i>
+              &nbsp;&nbsp;Support
+            </a>
+          </li>
+          <li>
+            <a href='https://tribal-council.com/profile'>
+              <i class="fa fa-user"></i>
+              &nbsp;&nbsp;<span class="truncate-name" title="Jimmy Winslow">Jimmy Winslow</span>
+            </a>
+          </li>
+          <li>
+              <a href="javascript:;" onclick="document.getElementById('logout-form').submit();return false;">
+                <i class="fa fa-sign-out"></i>
+                &nbsp;&nbsp;Log Out
+              </a>
+              <form id="logout-form" action="https://tribal-council.com/logout" method="POST">
+                <input type="hidden" name="_token" value="LV6QVbuATnAvSGH030IR5STdj7KWkIzrehOcWEpq">
+              </form>
+          </li>
+          
+
+
+      </ul>
+
+
+
+
+
+
+
+    </div> <!--/.navbar-collapse -->
+
+  </div> <!-- /.container -->
+
+</div> <!-- /.navbar -->
+
+
+<div class="mainbar">
+
+  <div class="container">
+
+    <button type="button" class="btn mainbar-toggle" data-toggle="collapse" data-target=".mainbar-collapse">
+      <i class="fa fa-bars"></i>
+    </button>
+
+    <div class="mainbar-collapse collapse">
+
+        
+
+              
+      <ul class="nav navbar-nav mainbar-nav">
+
+        
+        
+                  <li class="">
+            <a href="https://tribal-council.com/league">
+              <i class="fa fa-globe"></i>
+              <span class='hidden-xs'>&nbsp;</span>Leagues<span class='hidden-xs'>&nbsp;</span>
+            </a>
+          </li>
+        
+                              <li class="">
+              <a href="https://tribal-council.com/team/pick">
+              <i class="fa fa-random"></i>
+              <span class='hidden-xs'>&nbsp;&nbsp;&nbsp;</span>Draft<span class='hidden-xs'>&nbsp;&nbsp;&nbsp;</span>
+              </a>
+            </li>
+                                    <li class="">
+            <a href="https://tribal-council.com/team/swap">
+            <i class="fa fa-male"></i>
+            <span class='hidden-xs'>&nbsp;&nbsp;&nbsp;</span>Bench<span class='hidden-xs'>&nbsp;&nbsp;&nbsp;</span>
+            </a>
+          </li>
+        
+        <li class="active">
+          <a href="/contestants">
+          <i class="fa fa-users"></i>
+          Survivors
+          </a>
+        </li>
+
+        <li class="">
+          <a href="https://tribal-council.com/episodes">
+          <i class="fa fa-list-ul"></i>
+          Episodes
+          </a>
+        </li>
+
+                    <li class="">
+                <a href="https://tribal-council.com/leaderboards">
+                    <i class="fa fa-trophy"></i>
+                    Rankings
+                </a>
+            </li>
+        
+        <li class="">
+          <a href="https://tribal-council.com/rules">
+          <i class="fa fa-file-text"></i>
+          <span class='hidden-xs'>&nbsp;&nbsp;&nbsp;</span>Rules<span class='hidden-xs'>&nbsp;&nbsp;&nbsp;</span>
+          </a>
+        </li>
+
+        <li class="">
+          <a href="https://tribal-council.com/about">
+            <i class="fa fa-fire"></i>
+            <span class='hidden-xs'>&nbsp;&nbsp;</span>About<span class='hidden-xs'>&nbsp;&nbsp;</span>
+          </a>
+        </li>
+
+         
+
+      </ul>
+      
+    </div> <!-- /.navbar-collapse -->
+
+  </div> <!-- /.container -->
+
+</div> <!-- /.mainbar -->
+
+<div class="container">
+  <div class="content">
+    <div class="content-container">
+
+      <div class="content-header">
+        <input id='quicksearch' placeholder="Search..." class="form-control pull-right" style="width:15em;">
+        <h2 class="content-header-title">Survivors</h2>
+      </div> <!-- /.content-header -->
+
+      <div class="row">
+        <div class="col-lg-12">
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/00902f8a-0304-4e79-addd-b2dfe384dd38'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Angelina Keeley
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#ff69b4;">Vati Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/8e38a9f1-0ed7-4b55-865a-1faecc3a925e.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/f02b7a71-2353-4bd8-8f2f-a958897c41d4'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Aubry Bracco
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#00ced1;">Kalo Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/e42a5bd3-a18d-4973-8c67-31f5e1083f22.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/8646857f-0eb7-49b3-942f-e34f5f385118'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Benjamin “Coach” Wade
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#00ced1;">Kalo Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/5fea53ad-f4ee-4b2e-b7fd-1359a8fea45d.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/ab8ea829-f1bf-478a-9185-ce1d71e863b4'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Charlie Davis
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#ff8c00;">Cila Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/6688ee0b-f0a7-448f-ada8-bd956e935575.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/74a71cac-e698-44f8-92f9-63f8c66dd858'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Chrissy Hofbeck
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#00ced1;">Kalo Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/6d7792eb-f0b3-4039-a24c-85992747f5fc.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/1e8e16fa-9ae2-48d0-9eb3-76992c73e5bf'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Christian Hubicki
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#ff69b4;">Vati Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/2610e2ad-9dac-4cae-b6d6-b2c70d79b7fd.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/3376a067-aded-4664-84cf-4c27f61afe60'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Cirie Fields
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#ff8c00;">Cila Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/1eef3ebb-1630-4730-9700-3c491d06a173.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/12e3e212-360f-4645-b505-1dc0a4618a7a'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Colby Donaldson
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#00ced1;">Kalo Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/18c0526c-528c-4f2f-a16a-1cafa1d33496.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/24577db8-5428-411c-b1ad-e22d067ae471'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Dee Valladares
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#ff8c00;">Cila Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/f832e3bb-c0ea-4854-ac57-d7dc4d85b613.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/1a580ce6-f050-4cfd-92a0-10fd1172dadc'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Emily Flippen
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#ff69b4;">Vati Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/f48a7302-0f83-481c-9953-f76059591dcc.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/8682d041-6e44-4620-b370-9ad982c561f4'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Genevieve Mushaluk
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#00ced1;">Kalo Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/a1f26dcb-8bd0-46af-b2f8-56228d1f9d45.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/17880c85-cb7b-4ddc-ab39-eb34556c1f70'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Jenna Lewis-Dougherty
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#000000;">Out Of Game</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/cb0204d6-1983-42e6-8135-288858db4b36.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/d794dd7f-d7ca-4e87-9f83-fae141992cbb'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Jonathan Young
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#ff8c00;">Cila Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/bb098db4-c988-4e4a-bed1-921a75812777.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/ff3e1c53-4e8e-4828-a7df-424eaa8ef35f'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Joseph “Joe” Hunter
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#00ced1;">Kalo Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/d2e5c461-3251-4cd8-8b9e-9f75514cd0f5.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/bbf825b0-fa1a-40d0-9a74-c29d291752be'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Kamilla Karthigesu
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#ff8c00;">Cila Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/0e9c8564-7264-476e-9af1-856a3c7bfd9d.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/53a252eb-5c28-4fc6-954e-1a8a69ebbcc0'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Kyle Fraser
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#000000;">Out Of Game</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/42485a6f-979e-4c4b-8697-e3e2e4fd795d.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/20b068a6-dfda-4c62-a44f-385ef306980e'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Mike White
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#ff69b4;">Vati Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/e4b89e63-c60d-4d6f-a6b9-2c09830c9296.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/c5d0e6ea-9c03-4074-a364-d012102607e3'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Ozzy Lusth
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#ff69b4;">Vati Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/925784d2-af95-46b1-89f8-1b27dc6ff9c6.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/c0e1bafb-50d4-44a2-84cb-08c5e4ed5f43'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Q Burdette
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#000000;">Out Of Game</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/39e7ebba-8ec7-4026-8c1c-8cc013aca495.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/3ba2b294-4aed-4e3f-ad00-dcc3bef894cb'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Rick Devens
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#ff8c00;">Cila Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/f6bf8d9f-2a74-45bc-a256-996066e97221.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/042ee802-fb3e-4788-b6a1-a51ab8edf0ea'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Rizo Velovic
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#ff8c00;">Cila Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/f20c7725-05d1-41ba-a6c1-c05a541c766f.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/57b968cf-f7dc-4c9a-8004-5e6e1692f4ce'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Savannah Louie
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#000000;">Out Of Game</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/5e300b2f-9fc6-467c-826b-54ea9c5e39a5.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/25bb2e7a-8599-4f11-830f-6b3e628fcd2c'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Stephenie LaGrossa Kendrick
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#ff69b4;">Vati Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/c4d66bfb-35dc-4559-971e-80f03f981047.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+              
+                  <div class="col-sm-6 col-md-3 single-contestant" onclick="location.href='https://tribal-council.com/contestants/81b746c1-cfa2-429b-8397-244f058c683a'">
+                    <div class="row-stat">
+                      <h4 class="row-stat-value">
+                        Tiffany Ervin
+                      </h4>
+                      <span class="label row-stat-badge" style="margin-top: 5px;display: inline-block;width: 100%;text-align: center;font-size: 14px;text-shadow: 0px 0px 2px #000000;background-color:#00ced1;">Kalo Tribe</span>
+                      <div class='contestant-avatar-img' style="cursor: pointer;background-image:url(/uploads/contestants/3888606b-f415-4b03-9749-e0e9c15235c0.jpg)"></div>
+                    </div> <!-- /.row-stat -->
+                  </div> <!-- /.col -->
+
+                          
+        </div>
+      </div>
+
+    </div> <!-- /.content-container -->
+      
+  </div> <!-- /.content -->
+
+</div> <!-- /.container -->
+<div id="promoModal" class="modal modal-styled fade in" aria-hidden="false">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 class="modal-title">Donate</h3>
+        </div>
+        <div class="modal-body">
+          <p>Thank you so much for joining us and playing another season of Survivor!<br></p>If you'd like to buy us a coffee (but let's be real, it will go 
+to our server bills) you can do so at the link below: <p><br></p><h4><a href="https://www.buymeacoffee.com/tribalcouncil">https://www.buymeacoffee.com/tribalcouncil</a></h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-tertiary" data-dismiss="modal">Close</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+<div id="supportModal" class="modal modal-styled fade in" aria-hidden="false">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 class="modal-title">Support</h3>
+        </div>
+        <div class="modal-body">
+          <p>Something out of place? Have a problem with your account? Please don't hesitate to contact us at the email address below:</p>
+          <br>
+          <h4><a href='mailto:accounts@tribal-council.com'>accounts@tribal-council.com</a></h4>
+          <br>
+          <p>We'll do our best to get back to you as soon as we can.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-tertiary" data-dismiss="modal">Close</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+  <div id="hardcoreModal" class="modal modal-styled fade in" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 class="modal-title">Hardcore Mode</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <p class="help-block">"Hardcore Mode" is a new mode available to the creators of private leagues. If your private league is in Hardcore Mode, we will restrict who can be traded in and out of your roster during redrafts. <BR><BR>During a redraft, if your survivors have been voted out they will not be tradeable for a survivor that is still in the game. The slot for that survivor will be locked on your roster. This setting applies to all players in that private league.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-tertiary" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+  <div id="blindModal" class="modal modal-styled fade in" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 class="modal-title">Blind Mode</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <p class="help-block">"Blind Mode" is a new mode available to the creators of private leagues. If your private league is in Blind Mode, we will restrict the visible pick data to the last episode. <BR><BR>While waiting for the next episode to air, players will not be able to see the current picks that other players have in the league. Players will only be able to see the locked in picks for the last aired episode.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-tertiary" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<footer class="footer">
+
+  <div class="container">
+
+    <div class="row">
+
+      <div class="col-sm-5">
+
+        <h4>Tribal Council</h4>
+
+        <p>&copy; 2009 - 2026 Medium Mike &amp; Weatherstation</p>
+
+      </div> <!-- /.col -->
+
+    </div> <!-- /.row -->
+
+  </div> <!-- /.container -->
+
+</footer>
+
+  <script src="/js/libs/jquery-1.10.1.min.js"></script>
+  <script src="/js/libs/jquery-ui-1.9.2.custom.min.js"></script>
+  <script src="/js/libs/bootstrap.min.js"></script>
+
+
+
+  <!--[if lt IE 9]>
+  <script src="/js/libs/excanvas.compiled.js"></script>
+  <![endif]-->
+  <!-- App JS -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/summernote/0.8.4/summernote.js"></script>
+  <script src="/js/plugins/simplecolorpicker/jquery.simplecolorpicker.js"></script>
+  <script src="/js/plugins/select2/select2.js"></script>
+  <script src="/js/plugins/howl/howl.js"></script>
+  
+  
+  <script src="/js/admin-editor.js"></script>
+
+    <script src="/js/logout.js"></script>
+  
+    <script src="/js/tools-search.js"></script>
+    
+  </body>
+</html>

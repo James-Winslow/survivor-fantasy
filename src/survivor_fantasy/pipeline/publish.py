@@ -84,19 +84,29 @@ def fetch_data(conn) -> dict:
                 "episode_id": ep_id, "cumulative_pts": cum_pts, "episode_pts": ep_pts
             })
 
-        # Rosters with per-survivor total pts
+        # Elimination detection: players who appeared in confessionals in any
+        # episode but are absent from the latest episode's confessionals.
+        # This uses Layer 1 data only — no dependency on episode_scores or
+        # players.exit_type (which defaults to voted_out for all S50 returnees).
+        eliminated_ids = set(r[0] for r in conn.execute("""
+            SELECT DISTINCT c.player_id
+            FROM confessionals c
+            WHERE c.season_id = ?
+              AND c.player_id NOT IN (
+                  SELECT player_id FROM confessionals
+                  WHERE season_id = ? AND episode_id = ?
+              )
+        """, [SEASON_ID, SEASON_ID, latest_ep_id]).fetchall())
+
         roster_rows = conn.execute("""
             SELECT
                 lp.name,
                 pl.full_name,
                 COALESCE(SUM(es.pts), 0) AS total_pts,
-                pl.player_id,
-                MAX(CASE WHEN p2.exit_type IN ('voted_out','quit','medevac','eliminated_challenge')
-                         THEN 1 ELSE 0 END) AS is_eliminated
+                pl.player_id
             FROM league_rosters lr
             JOIN league_players lp ON lr.league_player_id = lp.league_player_id
             JOIN players pl        ON lr.survivor_player_id = pl.player_id
-            JOIN players p2        ON p2.player_id = pl.player_id
             LEFT JOIN episode_scores es
                 ON  es.league_player_id   = lr.league_player_id
                 AND es.survivor_player_id = lr.survivor_player_id
@@ -110,14 +120,14 @@ def fetch_data(conn) -> dict:
         """, [SEASON_ID, latest_ep_id, league_name]).fetchall()
 
         managers_rosters = {}
-        for manager, survivor, total_pts, player_id, is_elim in roster_rows:
+        for manager, survivor, total_pts, player_id in roster_rows:
             if manager not in managers_rosters:
                 managers_rosters[manager] = {"manager": manager, "survivors": []}
             managers_rosters[manager]["survivors"].append({
                 "name": survivor,
                 "player_id": player_id,
                 "total_pts": total_pts,
-                "eliminated": bool(is_elim),
+                "eliminated": player_id in eliminated_ids,
             })
 
         data["leagues"][league_name] = {
@@ -405,16 +415,18 @@ table.breakdown tr:hover td {{
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 10px;
-  overflow: hidden;
+  overflow: visible;
   animation: fadeUp 0.45s ease both;
   transition: border-color 0.2s;
+  display: flex;
+  flex-direction: column;
 }}
 
 .roster-card:hover {{ border-color: var(--gold); }}
 
 .rc-header {{
-  padding: 12px 16px;
-  background: var(--surface2);
+  padding: 14px 16px;
+  background: rgba(0,0,0,0.25);
   border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
@@ -445,16 +457,32 @@ table.breakdown tr:hover td {{
   transition: background 0.15s;
 }}
 
-.rc-survivor:last-child {{ border-bottom: none; }}
+.rc-survivor:last-child {{ border-bottom: none; border-radius: 0 0 10px 10px; }}
 .rc-survivor:hover {{ background: var(--gold-dim); }}
 
+.rc-survivor.eliminated {{
+  opacity: 0.45;
+}}
 .rc-survivor.eliminated .sv-name {{
   color: var(--stone);
   text-decoration: line-through;
   text-decoration-color: var(--ember);
+  text-decoration-thickness: 1px;
+}}
+.rc-survivor.eliminated .sv-pts {{
+  color: var(--stone);
+}}
+.eliminated-badge {{
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ember);
+  margin-left: 6px;
+  opacity: 0.8;
 }}
 
-.sv-name {{ color: var(--text-mute); }}
+.sv-name {{ color: var(--text); font-weight: 400; }}
 
 .sv-pts {{
   font-family: 'DM Mono', monospace;
@@ -673,8 +701,8 @@ function renderRosters(rosters, standings) {{
     const total = standings.find(s => s.manager === m.manager)?.cumulative_pts || 0;
     const survivors = m.survivors.map(s => `
       <div class="rc-survivor${{s.eliminated ? ' eliminated' : ''}}">
-        <span class="sv-name">${{s.name}}</span>
-        <span class="sv-pts${{s.total_pts === 0 ? ' zero' : ''}}">${{s.total_pts}} pts</span>
+        <span class="sv-name">${{s.name}}${{s.eliminated ? '<span class="eliminated-badge">out</span>' : ''}}</span>
+        <span class="sv-pts${{s.total_pts === 0 ? ' zero' : ''}}">${{s.total_pts > 0 ? s.total_pts + ' pts' : '—'}}</span>
       </div>
     `).join('');
     return `

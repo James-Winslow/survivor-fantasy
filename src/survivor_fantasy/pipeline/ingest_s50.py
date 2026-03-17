@@ -147,14 +147,11 @@ def get_next_id(conn, table: str) -> int:
 def ingest_episodes(conn):
     print("\n── Step 1: Episodes ─────────────────────────────────────────────")
     # Delete in FK dependency order
-    for table in ["league_rosters", "episode_scores", "league_standings",
-                  "confessionals", "episodes"]:
-        exists = conn.execute(
-            "SELECT COUNT(*) FROM information_schema.tables WHERE table_name=?",
-            [table]
-        ).fetchone()[0]
-        if exists:
-            conn.execute(f"DELETE FROM {table} WHERE season_id = {SEASON_ID}")
+    conn.execute("DELETE FROM league_rosters  WHERE season_id = ?", [SEASON_ID])
+    conn.execute("DELETE FROM episode_scores  WHERE season_id = ?", [SEASON_ID])
+    conn.execute("DELETE FROM league_standings WHERE season_id = ?", [SEASON_ID])
+    conn.execute("DELETE FROM confessionals   WHERE season_id = ?", [SEASON_ID])
+    conn.execute("DELETE FROM episodes        WHERE season_id = ?", [SEASON_ID])
 
     rows = [{
         'episode_id':          SEASON_ID * 1000 + ep_num,
@@ -309,6 +306,13 @@ def ingest_confessionals(conn, player_lookup: dict):
             skipped += 1
             continue
 
+        # Skip confessional row for eliminated players in their exit episode.
+        # Confessional presence in the latest episode is used as the elimination
+        # signal in publish.py — eliminated players must be absent from ep N.
+        if int(row['voted_out']) == 1 or int(row['quit']) == 1 or int(row['medevac']) == 1:
+            skipped += 1
+            continue
+
         rows.append({
             'player_id':          player_id,
             'episode_id':         episode_id[0],
@@ -347,56 +351,14 @@ def ingest_league_players(conn) -> dict:
 
     roster_rows = list(csv.DictReader(ROSTERS_PATH.open(encoding='utf-8-sig')))
 
-    # Drop all Layer 2 tables in FK order and recreate cleanly.
-    # league_players originally had UNIQUE(name) which blocks same manager
-    # appearing in multiple leagues. We rebuild without that constraint.
-    conn.execute("DROP TABLE IF EXISTS league_standings CASCADE")
-    conn.execute("DROP TABLE IF EXISTS episode_scores   CASCADE")
-    conn.execute("DROP TABLE IF EXISTS league_rosters   CASCADE")
-    conn.execute("DROP TABLE IF EXISTS league_players   CASCADE")
-    conn.execute("""
-        CREATE TABLE league_players (
-            league_player_id INTEGER PRIMARY KEY,
-            name             VARCHAR NOT NULL,
-            league_name      VARCHAR,
-            email            VARCHAR
-        )
-    """)
-    conn.execute("""
-        CREATE TABLE league_rosters (
-            id                  INTEGER PRIMARY KEY,
-            league_player_id    INTEGER NOT NULL REFERENCES league_players(league_player_id),
-            survivor_player_id  VARCHAR NOT NULL REFERENCES players(player_id),
-            episode_id          INTEGER NOT NULL REFERENCES episodes(episode_id),
-            season_id           INTEGER NOT NULL,
-            is_active           BOOLEAN NOT NULL,
-            UNIQUE (league_player_id, survivor_player_id, episode_id)
-        )
-    """)
-    conn.execute("""
-        CREATE TABLE episode_scores (
-            id                  INTEGER PRIMARY KEY,
-            league_player_id    INTEGER NOT NULL REFERENCES league_players(league_player_id),
-            episode_id          INTEGER NOT NULL REFERENCES episodes(episode_id),
-            season_id           INTEGER NOT NULL,
-            survivor_player_id  VARCHAR NOT NULL REFERENCES players(player_id),
-            event_type          VARCHAR NOT NULL,
-            pts                 INTEGER NOT NULL,
-            event_description   VARCHAR
-        )
-    """)
-    conn.execute("""
-        CREATE TABLE league_standings (
-            id                  INTEGER PRIMARY KEY,
-            league_player_id    INTEGER NOT NULL REFERENCES league_players(league_player_id),
-            episode_id          INTEGER NOT NULL REFERENCES episodes(episode_id),
-            season_id           INTEGER NOT NULL,
-            episode_pts         INTEGER DEFAULT 0,
-            cumulative_pts      INTEGER DEFAULT 0,
-            rank                INTEGER,
-            UNIQUE (league_player_id, episode_id)
-        )
-    """)
+    # Add league_name column if it doesn't exist yet
+    try:
+        conn.execute("ALTER TABLE league_players ADD COLUMN league_name VARCHAR")
+        print("  Added league_name column to league_players")
+    except Exception:
+        pass  # column already exists
+
+    conn.execute("DELETE FROM league_players")
 
     # Collect unique (manager_name, league_name) pairs
     seen = set()
@@ -424,6 +386,7 @@ def ingest_league_players(conn) -> dict:
     """)
     conn.unregister("_insert_df")
 
+    # Return lookup keyed by (name, league_name) -> league_player_id
     rows = conn.execute(
         "SELECT league_player_id, name, league_name FROM league_players"
     ).fetchall()
@@ -432,6 +395,7 @@ def ingest_league_players(conn) -> dict:
     for (name, league), lp_id in sorted(lookup.items(), key=lambda x: x[0]):
         print(f"    [{lp_id:>2}] {name:<22} ({league})")
     return lookup
+
 
 # =============================================================================
 # Step 6: League rosters
