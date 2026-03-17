@@ -84,19 +84,17 @@ def fetch_data(conn) -> dict:
                 "episode_id": ep_id, "cumulative_pts": cum_pts, "episode_pts": ep_pts
             })
 
-        # Elimination detection: players who appeared in confessionals in any
-        # episode but are absent from the latest episode's confessionals.
-        # This uses Layer 1 data only — no dependency on episode_scores or
-        # players.exit_type (which defaults to voted_out for all S50 returnees).
-        eliminated_ids = set(r[0] for r in conn.execute("""
-            SELECT DISTINCT c.player_id
-            FROM confessionals c
-            WHERE c.season_id = ?
-              AND c.player_id NOT IN (
-                  SELECT player_id FROM confessionals
-                  WHERE season_id = ? AND episode_id = ?
-              )
-        """, [SEASON_ID, SEASON_ID, latest_ep_id]).fetchall())
+        # Elimination detection: read directly from season_state table,
+        # which is populated by ingest_s50.py from events.csv still_in_game=0.
+        # This is the authoritative source — handles ep1 boots, double
+        # eliminations, medevacs, quits, and any future edge cases cleanly.
+        try:
+            eliminated_ids = set(r[0] for r in conn.execute("""
+                SELECT value FROM season_state
+                WHERE season_id = ? AND key = 'eliminated'
+            """, [SEASON_ID]).fetchall())
+        except Exception:
+            eliminated_ids = set()  # season_state table not yet populated
 
         roster_rows = conn.execute("""
             SELECT

@@ -338,6 +338,69 @@ def ingest_confessionals(conn, player_lookup: dict):
 
 
 # =============================================================================
+# Step 5a: Eliminated players from events.csv
+# Stores a clean set of eliminated player_ids derived directly from
+# still_in_game=0 rows in events.csv. This is the authoritative source
+# for elimination status — not confessional presence, not players.exit_type.
+# Handles edge cases: ep1 boots (no prior confessionals), double eliminations,
+# medevacs, quits, etc.
+# =============================================================================
+
+def ingest_eliminated_players(conn, player_lookup: dict):
+    print("\n── Step 5a: Eliminated players ──────────────────────────────────")
+    if not EVENTS_PATH.exists():
+        print(f"  ERROR: {EVENTS_PATH} not found — skipping")
+        return
+
+    events = list(csv.DictReader(EVENTS_PATH.open(encoding='utf-8-sig')))
+
+    # A player is eliminated if any row has still_in_game=0
+    eliminated = set()
+    for row in events:
+        if int(row['still_in_game']) == 0:
+            player_id = resolve_player_id(
+                row['player_name'], player_lookup, f"ep{row['episode']}"
+            )
+            if player_id:
+                eliminated.add(player_id)
+
+    # Store in a simple key-value table using DuckDB
+    # We use a temp view since we don't need a persistent table —
+    # publish.py will query this via a Python set passed from ingest context.
+    # Instead, write to a lightweight season_state table.
+    try:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS season_state (
+                season_id  INTEGER NOT NULL,
+                key        VARCHAR NOT NULL,
+                value      VARCHAR NOT NULL,
+                PRIMARY KEY (season_id, key, value)
+            )
+        """)
+    except Exception:
+        pass
+
+    conn.execute("DELETE FROM season_state WHERE season_id = ? AND key = 'eliminated'",
+                 [SEASON_ID])
+
+    if eliminated:
+        import pandas as pd
+        df = pd.DataFrame([
+            {'season_id': SEASON_ID, 'key': 'eliminated', 'value': pid}
+            for pid in eliminated
+        ])
+        conn.register("_insert_df", df)
+        conn.execute("""
+            INSERT INTO season_state (season_id, key, value)
+            SELECT season_id, key, value FROM _insert_df
+        """)
+        conn.unregister("_insert_df")
+
+    print(f"  Stored {len(eliminated)} eliminated player IDs: "
+          f"{[player_lookup.get(p, p) for p in sorted(eliminated)]}")
+
+
+# =============================================================================
 # Step 5: League players from rosters.csv
 # league_players has one row per manager PER LEAGUE so Jimmy Winslow
 # appears twice — once for each league he's in.
@@ -531,6 +594,7 @@ def main():
     ingest_tribes(conn)
     ingest_tribe_memberships(conn, player_lookup)
     ingest_confessionals(conn, player_lookup)
+    ingest_eliminated_players(conn, player_lookup)
     lp_lookup = ingest_league_players(conn)
     ingest_league_rosters(conn, player_lookup, lp_lookup)
 
