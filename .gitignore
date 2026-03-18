@@ -54,3 +54,4 @@ config.local.yaml
 
 # R notebook outputs
 *.nb.html
+debug_contestants.html
