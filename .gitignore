@@ -55,3 +55,5 @@ config.local.yaml
 # R notebook outputs
 *.nb.html
 debug_contestants.html
+check_*.py
+debug_*.html
