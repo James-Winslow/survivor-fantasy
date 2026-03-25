@@ -416,13 +416,53 @@ def ingest_league_players(conn) -> dict:
     roster_rows = list(csv.DictReader(ROSTERS_PATH.open(encoding='utf-8-sig')))
 
     # Add league_name column if it doesn't exist yet
-    try:
-        conn.execute("ALTER TABLE league_players ADD COLUMN league_name VARCHAR")
-        print("  Added league_name column to league_players")
-    except Exception:
-        pass  # column already exists
-
-    conn.execute("DELETE FROM league_players")
+    conn.execute("DROP TABLE IF EXISTS league_standings CASCADE")
+    conn.execute("DROP TABLE IF EXISTS episode_scores   CASCADE")
+    conn.execute("DROP TABLE IF EXISTS league_rosters   CASCADE")
+    conn.execute("DROP TABLE IF EXISTS league_players   CASCADE")
+    conn.execute("""
+        CREATE TABLE league_players (
+            league_player_id INTEGER PRIMARY KEY,
+            name             VARCHAR NOT NULL,
+            league_name      VARCHAR,
+            email            VARCHAR
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE league_rosters (
+            id                  INTEGER PRIMARY KEY,
+            league_player_id    INTEGER NOT NULL REFERENCES league_players(league_player_id),
+            survivor_player_id  VARCHAR NOT NULL REFERENCES players(player_id),
+            episode_id          INTEGER NOT NULL REFERENCES episodes(episode_id),
+            season_id           INTEGER NOT NULL,
+            is_active           BOOLEAN NOT NULL,
+            UNIQUE (league_player_id, survivor_player_id, episode_id)
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE episode_scores (
+            id                  INTEGER PRIMARY KEY,
+            league_player_id    INTEGER NOT NULL REFERENCES league_players(league_player_id),
+            episode_id          INTEGER NOT NULL REFERENCES episodes(episode_id),
+            season_id           INTEGER NOT NULL,
+            survivor_player_id  VARCHAR NOT NULL REFERENCES players(player_id),
+            event_type          VARCHAR NOT NULL,
+            pts                 INTEGER NOT NULL,
+            event_description   VARCHAR
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE league_standings (
+            id                  INTEGER PRIMARY KEY,
+            league_player_id    INTEGER NOT NULL REFERENCES league_players(league_player_id),
+            episode_id          INTEGER NOT NULL REFERENCES episodes(episode_id),
+            season_id           INTEGER NOT NULL,
+            episode_pts         INTEGER DEFAULT 0,
+            cumulative_pts      INTEGER DEFAULT 0,
+            rank                INTEGER,
+            UNIQUE (league_player_id, episode_id)
+        )
+    """)
 
     # Collect unique (manager_name, league_name) pairs
     seen = set()
