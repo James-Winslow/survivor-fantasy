@@ -1,95 +1,122 @@
 # survivor-fantasy — Session Handoff Document
-**Date**: March 25, 2026 (ep5 night)
-**Transcript location**: /mnt/transcripts/2026-03-25-19-58-45-survivor-fantasy-pipeline.txt
+**Last updated**: April 1, 2026 (ep6 night — The Blood Moon, merge episode)
+**Transcript**: /mnt/transcripts/2026-03-25-19-58-45-survivor-fantasy-pipeline.txt
 
 ---
 
 ## Current State — What's Working
 
-- **Full pipeline working on both Mac and Windows**
-- **GitHub Pages live**: 
+- **Full pipeline working on Mac and Windows**
+- **GitHub Pages live**:
   - https://james-winslow.github.io/survivor-fantasy/buffs.html
   - https://james-winslow.github.io/survivor-fantasy/fjv.html
-- **DB through ep4** (Mike White voted out)
-- **Elimination tracking** via `season_state` table (authoritative, from `still_in_game=0`)
-- **Mac setup**: uses `bootstrap_s50.py` for minimal DB (no S1-S49 history needed)
-- **venv**: `.venv/` in project root, activate with `source .venv/bin/activate` or `sfenv` alias
-- **Scoring**: all 8 picks score per manager (active/bench NOT yet implemented)
+- **DB through ep5** (Charlie Davis + Angelina Keeley voted out)
+- **Ep6 events NOT yet entered** — do this next session
+- **Elimination tracking** via `season_state` table (authoritative)
+- **Mac setup**: `bootstrap_s50.py` for minimal DB
+- **venv**: `.venv/` in project root, activate: `source .venv/bin/activate` or `sfenv`
+- **Scoring**: all 8 picks score (active/bench NOT yet implemented in scorer)
+- **starters.csv**: ep6 data captured for all 14 managers (both leagues)
 
 ---
 
-## Current Standings (through ep4, all 8 scoring)
+## Current Standings (through ep5, all 8 scoring)
 
-**In the Buffs League:**
-1. Chris Roth 184
-2. Amy 182
+**In the Buffs League** (from pipeline output):
+1. Amy 189 (was 182 through ep3 — note: Buffs ep4 data may need verification)
+2. Jimmy Winslow 177
 3. Natalie Bailey 173
-4. Jimmy Winslow 170 (tied)
-4. Lo 170 (tied)
-6. The Merpenters 164
-7. Joe 155
-8. Lindsay Beaty 154
+4. Chris Roth 172
+5. Lo 158
+6. Joe 155
+7. Lindsay Beaty 154
+8. The Merpenters 152
 9. rachel fagan 125
 
-**FJV Survivor Heads League:**
-1. Austin Dickman 190
-2. Alec Hartman 183
+**FJV Survivor Heads League**:
+1. Alec Hartman 190
+2. Austin Dickman 185 (was leading before)
 3. Kaitlynn Durham 178
-4. Jimmy Winslow 170
+4. Jimmy Winslow 177
 5. Sidney 135
 
----
+**tribal-council.com standings (ep6, their scoring)**:
+- Buffs: Lindsay Beaty 308, Lo 289, Natalie Bailey 286, Joe 272, Jimmy 270, Merpenters 268, Chris Roth 266, rachel fagan 240, Amy 225
+- FJV: Jimmy 270, Austin 204, Alec 202, Kaitlynn 193, Sidney 142
 
-## Jimmy Winslow FJV Roster (current, ep5)
-
-**Starters (5):** Rick Devens, Genevieve Mushaluk, Jonathan Young, Charlie Davis, Dee Valladares
-**Bench (3):** Christian Hubicki, Ozzy Lusth, Emily Flippen
-
-UUID mapping confirmed via console script on tribal-council.com:
-- 3ba2b294 = Rick Devens
-- 8682d041 = Genevieve Mushaluk
-- d794dd7f = Jonathan Young
-- ab8ea829 = Charlie Davis
-- 24577db8 = Dee Valladares
-- 1e8e16fa = Christian Hubicki (bench)
-- c5d0e6ea = Ozzy Lusth (bench)
-- 1a580ce6 = Emily Flippen (bench)
+Note: Large gap between our scores and theirs due to:
+1. Active/bench not implemented (all 8 score vs their 5)
+2. Missing scoring events (journeys, boomerang idols, extra votes)
+3. Post-merge survived pts = +6, not yet in our events.csv for ep6
 
 ---
 
-## All FJV Manager Rosters (current ep5, scraped via console script)
+## Ep6 "The Blood Moon" — What Happened
 
-**Austin Dickman starters:** Charlie Davis, Christian Hubicki, Rizo Velovic, Genevieve Mushaluk, Joe Hunter
-**Austin bench:** Kamilla Karthigesu, Mike White (eliminated), Cirie Fields
+**Merge at 17 players** — largest in Survivor history.
+**Blood Moon twist**: Players split into 3 groups, each voted someone out = 3 boots.
 
-**Alec Hartman starters:** Angelina Keeley, Charlie Davis, Christian Hubicki, Colby Donaldson, Joe Hunter
-**Alec bench:** Genevieve Mushaluk (big miss!), Emily Flippen, Stephenie LaGrossa
+**Eliminated ep6**: Colby Donaldson, Genevieve Mushaluk, Kamilla Karthigesu
 
-**Kaitlynn Durham starters:** Christian Hubicki, Cirie Fields, Kamilla Karthigesu, Genevieve Mushaluk, Ozzy Lusth
-**Kaitlynn bench:** Dee Valladares, Rick Devens, Tiffany Ervin
+**Key ep6 scoring events** (from episode_feed.csv):
+- Ozzy Lusth: Finds Twist +3, immunity by default +6
+- Rizo Velovic: immunity by default +6
+- Dee Valladares: wins individual immunity +6
+- Christian Hubicki: wins individual immunity +6
+- Stephenie LaGrossa: wins individual immunity +7 (bonus)
+- Jonathan Young, Stephenie, Tiffany, Chrissy, Kamilla: reward participant +2/+3
+- Merged Tribe survived a round (x3): +18 (applies to all survivors)
 
-**Sidney starters:** Angelina Keeley, Kamilla Karthigesu, Cirie Fields, Mike White (eliminated!), Jenna Lewis (eliminated!)
-**Sidney bench:** Emily Flippen, Christian Hubicki, Dee Valladares
+**ep6 NOT yet in events.csv or DB** — needs to be entered next session.
 
 ---
 
-## S50 Current Game State (after ep4)
+## Jimmy Winslow Rosters (ep6, confirmed)
 
-**Eliminated**: Jenna Lewis (ep1), Kyle Fraser (ep1 medevac), Savannah Louie (ep2), Q Burdette (ep3), Mike White (ep4)
-**Remaining**: 19 players
+**FJV starters**: Genevieve(OUT), Jonathan, Emily, Dee, Christian
+**FJV bench**: Rick Devens, Ozzy, Charlie(OUT)
 
-**Tribe compositions (post-ep3 swap, unchanged ep4):**
-- Cila: Charlie Davis, Cirie Fields, Dee Valladares, Jonathan Young, Kamilla Karthigesu, Rick Devens, Rizo Velovic
-- Kalo: Aubry Bracco, Benjamin Wade, Chrissy Hofbeck, Colby Donaldson, Genevieve Mushaluk, Joe Hunter, Tiffany Ervin
-- Vatu: Angelina Keeley, Christian Hubicki, Emily Flippen, Ozzy Lusth, Stephenie LaGrossa
+**Buffs starters**: Genevieve(OUT), Dee, Jonathan, Christian, Emily
+**Buffs bench**: Rick, Charlie(OUT), Ozzy
 
-**Ep5 context ("Open Wounds", tonight March 25):**
-- DOUBLE ELIMINATION — two tribes sent to TC, only one tribe safe
-- Charlie vs Rizo "Operation Bad Blood" rivalry peaks on Cila
-- Vatu has been losing every challenge, likely goes to TC again
-- Ozzy pissed after being left out of Mike vote
-- Rick Devens recognizes he may be on the bottom of Cila (original Kalo majority)
-- Stephenie on the outs on Vatu
+Post-ep6: Genevieve eliminated, need to move someone up.
+Options: Rick Devens or Ozzy Lusth for ep7.
+Rick = safer, steadier. Ozzy = volatile, individual immunity threat.
+
+---
+
+## All Manager Rosters (ep6 current, from starters.csv)
+
+### FJV Survivor Heads League
+**Austin Dickman** starters: Christian, Rizo, Genevieve(OUT), Joe Hunter, Kamilla(OUT) | bench: Charlie(OUT), Mike(OUT), Cirie
+**Alec Hartman** starters: Christian, Stephenie, Colby(OUT), Joe Hunter, Emily | bench: Charlie(OUT), Angelina(OUT), Genevieve(OUT)
+**Kaitlynn Durham** starters: Christian, Cirie, Kamilla(OUT), Genevieve(OUT), Ozzy | bench: Dee, Rick, Tiffany
+**Sidney** starters: Angelina(OUT), Kamilla(OUT), Cirie, Mike(OUT), Jenna(OUT) | bench: Emily, Christian, Dee
+
+### In the Buffs League
+**Lindsay Beaty** starters: Coach, Stephenie, Jonathan, Tiffany, Ozzy | bench: Q(OUT), Angelina(OUT), Emily
+**Lo** starters: Aubry, Jonathan, Dee, Rick, Ozzy | bench: Mike(OUT), Cirie, Christian
+**Natalie Bailey** starters: Jonathan, Dee, Rick, Ozzy, Aubry | bench: Christian, Cirie, Chrissy
+**Joe** starters: Jonathan, Stephenie, Joe Hunter, Ozzy, Tiffany | bench: Christian, Emily, Rick
+**The Merpenters** starters: Jonathan, Christian, Tiffany, Joe Hunter, Rizo | bench: Mike(OUT), Rick, Emily
+**Chris Roth** starters: Ozzy, Colby(OUT), Aubry, Dee, Rizo | bench: Mike(OUT), Cirie, Stephenie
+**rachel fagan** starters: Dee, Jonathan, Rizo, Joe Hunter, Ozzy | bench: Cirie, Stephenie, Christian
+**Amy** starters: Colby(OUT), Rick, Genevieve(OUT), Kamilla(OUT), Joe Hunter | bench: Mike(OUT), Charlie(OUT), Christian
+
+---
+
+## S50 Game State (after ep6)
+
+**Eliminated**: Jenna Lewis (ep1), Kyle Fraser (ep1 medevac), Savannah Louie (ep2),
+Q Burdette (ep3), Mike White (ep4), Charlie Davis (ep5), Angelina Keeley (ep5),
+Colby Donaldson (ep6), Genevieve Mushaluk (ep6), Kamilla Karthigesu (ep6)
+
+**Remaining 14 players** (post-merge):
+Aubry Bracco, Benjamin "Coach" Wade, Chrissy Hofbeck, Christian Hubicki,
+Cirie Fields, Dee Valladares, Emily Flippen, Joe Hunter, Jonathan Young,
+Oscar "Ozzy" Lusth, Rick Devens, Rizo Velovic, Stephenie LaGrossa, Tiffany Ervin
+
+**Merge tribe**: All 14 playing together now. Post-merge scoring = +6 survived per ep.
 
 ---
 
@@ -99,15 +126,15 @@ UUID mapping confirmed via console script on tribal-council.com:
 **Local Windows**: C:\Users\james\Projects\DataScience\Repositories\survivor-fantasy
 **Repo**: github.com/James-Winslow/survivor-fantasy
 
-**Key files:**
-- `data/season50/events.csv` — manual weekly entry, 87 rows through ep4
-- `data/season50/rosters.csv` — 112 rows, 14 manager×league combinations
-- `data/survivor.duckdb` — gitignored, rebuild per machine
-- `bootstrap_s50.py` — Mac minimal DB setup
-- `src/survivor_fantasy/pipeline/ingest_s50.py` — loads episodes through ep4
-- `src/survivor_fantasy/pipeline/scorer.py` — scoring engine
-- `src/survivor_fantasy/pipeline/publish.py` — generates HTML dashboards
-- `docs/buffs.html`, `docs/fjv.html` — GitHub Pages output
+**Data files** (gitignored — do NOT commit):
+- `data/season50/events.csv` — manual weekly entry, through ep5
+- `data/season50/rosters.csv` — 14 manager×league combinations
+- `data/season50/starters.csv` — ep6 captured, eps 1-5 still needed
+- `data/season50/episode_feed.csv` — 64 scoring events scraped from tc.com
+- `data/season50/portrait_urls.csv` — correct image URLs for 18 contestants
+- `data/season50/portraits/` — 18 downloaded portrait JPGs
+- `data/season50/raw_html/` — scraped episode HTML (ep1-6)
+- `data/survivor.duckdb` — rebuild per machine
 
 ---
 
@@ -124,75 +151,96 @@ UUID mapping confirmed via console script on tribal-council.com:
 
 ---
 
-## Weekly Pipeline (run after each episode)
+## Weekly Pipeline
 
 ```bash
 # Mac
-cd ~/Documents/Projects/DataScience/survivor-fantasy
-source .venv/bin/activate   # or: sfenv
+sfenv   # or: cd project && source .venv/bin/activate
+python status.py   # check what needs doing
 
-# 1. Add new episode rows to data/season50/events.csv
-# 2. Add episode to EPISODES list in ingest_s50.py
-# 3. Run pipeline
+# Add ep rows to data/season50/events.csv
+# Add episode to EPISODES list in ingest_s50.py
 python src/survivor_fantasy/pipeline/ingest_s50.py
 python src/survivor_fantasy/pipeline/scorer.py
 python src/survivor_fantasy/pipeline/publish.py
-
-# 4. Push
 git add docs/buffs.html docs/fjv.html src/survivor_fantasy/pipeline/ingest_s50.py
-git commit -m "ep5 scores: [who was voted out]"
+git commit -m "epN scores: [who was voted out]"
 git push
+
+# Windows: use python not python3, no venv needed
+```
+
+**Before each episode** — collect starters via console script on tc.com:
+```javascript
+const results = {};
+let currentManager = '';
+document.querySelectorAll('tr, td, div').forEach(el => {
+    const managerLink = el.querySelector && el.querySelector('a[href*="/players/"]');
+    if (managerLink) currentManager = managerLink.textContent.trim();
+    const onclick = el.getAttribute('onclick') || '';
+    const dataSrc = el.getAttribute('data-src') || '';
+    const style = el.getAttribute('style') || '';
+    const combined = onclick + dataSrc + style;
+    const m = combined.match(/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/);
+    if (m && currentManager) {
+        if (!results[currentManager]) results[currentManager] = [];
+        const prefix = m[1].substring(0,8);
+        if (!results[currentManager].includes(prefix)) results[currentManager].push(prefix);
+    }
+});
+copy(JSON.stringify(results, null, 2));
+console.log(Object.keys(results));
+```
+
+Then run:
+```powershell
+python scripts\batch_starters.py --episode 7 --league FJV
+python scripts\batch_starters.py --episode 7 --league Buffs
 ```
 
 ---
 
-## Immediate Next Steps (do after ep5 airs tonight)
+## Immediate Next Steps
 
-1. **Enter ep5 events.csv data** — double elimination, two boots
-2. **Add ep5 to EPISODES list in ingest_s50.py**:
+1. **Enter ep6 events.csv data** — 3 boots (Colby, Genevieve, Kamilla), immunities,
+   reward participants, merge survived points. Reference episode_feed.csv for events.
+2. **Add ep6 to EPISODES list** in ingest_s50.py:
    ```python
-   (5, 'Open Wounds', '2026-03-25', False, 19, 17),
+   (6, 'The Blood Moon', '2026-04-01', True, 17, 14),
    ```
-   Note: `is_merge=False`, starts with 19, ends with 17 (two eliminations)
-3. **Run pipeline and push**
+   `is_merge=True`, starts 17, ends 14 (3 eliminated)
+3. **Run pipeline and push dashboard**
+4. **Decide ep7 bench** for Jimmy — Rick or Ozzy replaces Genevieve
 
 ---
 
 ## Backlog — Prioritized
 
-### High priority (correctness)
-1. **Active/bench scoring** — biggest gap vs tribal-council.com scores
-   - Need `is_starter` per player per episode in `league_rosters`
-   - Console script approach works for scraping (UUID extraction confirmed)
-   - Need to build scraper that hits each episode tab per manager
-   - Scorer needs `WHERE is_starter = TRUE` filter
+### High (correctness)
+1. **Active/bench scoring** — scorer needs `WHERE is_active = TRUE` filter
+   - starters.csv loaded into league_rosters.is_active in ingest_s50.py
+   - ep6 starters.csv done, eps 1-5 still needed retroactively
+2. **Missing scoring events** — compare episode_feed.csv vs events.csv:
+   - Journey participants (+1 each) — eps 1, 2, 4
+   - Boomerang idol gifted/received — eps 1, 2, 4
+   - Extra votes earned — ep1
+   - Savannah's advantage — ep1
+   - Rick's fake idol — ep2
+   - Voted out events for Charlie/Angelina/Colby/Genevieve/Kamilla
+3. **Retroactive starters.csv** for eps 1-5 — episode tabs on tc.com still accessible
+   - Fetch via scrape_episodes.py (cookies still valid?) or console script per ep tab
 
-2. **Missing scoring events** — from tribal-council.com episode feed:
-   - Journey/summit participation (`participates_in_summit_pts: 1`)
-   - Boomerang idol gifted (`gifts_boomerang_idol_pts: 1`) — currently using `found_idol_clue`
-   - Boomerang idol received (`receives_boomerang_idol_pts: 3`) — currently missing
-   - Extra vote earned (`earns_extra_vote_pts: 3`) — Ozzy ep1, Savannah ep1
-   - Need 4 new columns in events.csv: `gifted_boomerang_idol`, `received_boomerang_idol`, 
-     `received_extra_vote`, `played_extra_vote`
+### Medium (architecture)
+4. **season_state table in schema.py** — currently inline in ingest_s50.py
+5. **league_players DDL** stale in schema.py — has old UNIQUE(name) constraint
+6. **Remove confessional skip logic** — season_state is now the authority
 
-3. **events.csv audit ep1-4** — several known errors:
-   - Genevieve ep1: should score finds_idol (3) + gifts_boomerang (1), not just idol_clue (1)
-   - Aubry ep2: received boomerang from Christian — missing +3
-   - Ozzy ep1: received boomerang — scored as idol_clue (+1) but should be +3
-   - Cirie ep1: received extra vote from Ozzy — missing +3
-   - Journey participants ep1: Coach, Ozzy, Q on journey (+1 each) — missing
-   - Savannah ep1: won advantage on journey (+3) — missing
-
-### Medium priority (architecture)
-4. **`season_state` table in schema.py** — currently created inline in ingest_s50.py
-5. **`league_players` DDL in schema.py** — stale, has old UNIQUE(name) constraint
-6. **Remove confessional skip logic** — no longer needed since season_state is authority
-7. **pyproject.toml build-backend** — confirmed fixed to `setuptools.build_meta`
-
-### Lower priority (features)
-8. **Dashboard per-episode drill-down modal**
-9. **Boomerang idol chain visualization**
-10. **Survivor optimizer** ("who should I start?" — Phase 3)
+### Lower (features)
+7. **Scoring explainer UI** in dashboard — per-event breakdown per survivor
+8. **Bench impact visualization** — show benched players' would-be points
+9. **Get remaining 6 portraits** — Angelina, Cirie, Emily, Jenna, Joe, Charlie
+   via logged-in fetch of /contestants page
+10. **Survivor optimizer** — Phase 3, post-season
 
 ---
 
@@ -200,29 +248,44 @@ git push
 
 | Decision | Choice | Rationale |
 |---|---|---|
-| Elimination authority | `season_state` table | Direct from `still_in_game=0` in events.csv |
-| episode_id scheme | season_id * 1000 + episode_num | e.g. S50 ep5 = 50005 |
-| Dashboard data | JSON embedded inline in HTML | No CORS issues for local file opening |
-| League separation | `league_players.league_name` column | Jimmy appears twice (once per league) |
-| Mac setup | bootstrap_s50.py minimal DB | Full historical DB only on Windows |
-| Layer separation | Layer 1 (show facts) / Layer 2 (league) | Layer 1 has zero league knowledge |
-| Scoring scope | All 8 picks score (pending fix) | is_starter implementation in progress |
+| Elimination authority | `season_state` table | Direct from `still_in_game=0` |
+| episode_id scheme | season_id × 1000 + episode_num | S50 ep6 = 50006 |
+| Dashboard data | JSON embedded inline in HTML | No CORS issues |
+| League separation | `league_players.league_name` | Jimmy appears twice |
+| Mac setup | bootstrap_s50.py minimal DB | Full historical DB on Windows only |
+| Scoring scope | All 8 score (pending fix) | is_starter implementation in progress |
+| Elimination detection | confessionals NOT used | season_state is sole authority |
 
 ---
 
-## Technical Debt — Documented Assumptions
+## Scraping Infrastructure (new this session)
 
-- **Confessional skip logic**: ingest_s50.py skips confessional rows for eliminated 
-  players in their exit episode. This was a workaround before season_state existed.
-  Should be removed — it corrupts confessional count analytics.
+**Working console script** — extracts all manager rosters from league overview page.
+Run on: `tribal-council.com/league/[league-uuid]`
 
-- **Double elimination episodes**: The confessional-absence approach to elimination 
-  detection would fail for these. season_state table handles it correctly since it 
-  reads `still_in_game=0` directly. Ep5 is the first double elimination test.
+**Episode URLs**:
+- Ep1: tribal-council.com/episodes/b902d8e2-38cb-4af7-a4f2-b7ff1ec13074
+- Ep2: tribal-council.com/episodes/60a6226b-2001-46ab-b400-e68e0cc5d842
+- Ep3: tribal-council.com/episodes/94982834-0c48-4218-a12d-ddbcd2689935
+- Ep4: tribal-council.com/episodes/b9def262-1aa0-43a9-9d4e-ef7c19b6901f
+- Ep5: tribal-council.com/episodes/d98b0fec-8151-45d9-b47e-46b0cf51851c
+- Ep6: tribal-council.com/episodes/current
 
-- **Boomerang idol scoring**: Currently using `found_idol_clue=1` as a proxy for 
-  boomerang events. This is wrong — clue is +1, receiving boomerang is +3. 
-  All episodes need retroactive correction once new fields are added.
+**League URLs**:
+- FJV: tribal-council.com/league/d6875609-2dee-4d1f-b6e5-dff95e8ae63f
+- Buffs: tribal-council.com/league/5e332cfb-e13e-4c45-b117-49e25abe9cac
 
-- **players.exit_type**: Unreliable for live S50 — all returnees default to 'voted_out'. 
-  Never use for elimination detection. Use season_state only.
+**Scripts added this session**:
+- `scripts/scrape_episodes.py` — fetches episode pages with cookies → raw HTML
+- `scripts/parse_episodes.py` — parses raw HTML → episode_feed.csv + portrait_urls.csv
+- `scripts/download_portraits.py` — downloads portrait JPGs using correct URLs
+- `scripts/batch_starters.py` — converts console script JSON → starters.csv rows
+- `scripts/fix_starters.py` — one-time cleanup for ep6 starters.csv errors
+- `scripts/update_starters.py` — interactive single-manager starters entry
+- `status.py` — session orientation, shows what needs doing
+- `WEEKLY.md` — Wednesday checklist with all commands
+
+**Portrait image URL pattern**:
+Contestant UUID (in onclick) ≠ Image UUID (in src).
+Correct URLs are in `data/season50/portrait_urls.csv`.
+18 of 24 portraits downloaded. Missing: Angelina, Cirie, Emily, Jenna, Joe, Charlie.
