@@ -118,6 +118,31 @@ def score_event_row(row: dict, cfg: dict) -> list[tuple[str, int, str]]:
         events.append(('medical_removal', cfg['medical_removal_pts'],
                        'Medical evacuation'))
 
+    if int(row['voted_out']) == 1:
+        events.append(('voted_out', 0,
+                       'Voted out'))  # 0 pts but used for elimination detection
+
+    # New event types
+    if int(row.get('received_boomerang_idol', 0)) == 1:
+        events.append(('receives_boomerang_idol', cfg.get('receives_boomerang_idol_pts', 3),
+                       'Received boomerang idol'))
+
+    if int(row.get('received_extra_vote', 0)) == 1:
+        events.append(('earns_extra_vote', cfg.get('earns_extra_vote_pts', 3),
+                       'Earned extra vote'))
+
+    if int(row.get('made_fake_idol', 0)) == 1:
+        events.append(('makes_fake_idol', cfg.get('makes_fake_idol_pts', 2),
+                       'Made fake immunity idol'))
+
+    if int(row.get('journey', 0)) == 1:
+        events.append(('participates_in_summit', cfg.get('participates_in_summit_pts', 1),
+                       'Participated in journey/summit'))
+
+    if int(row.get('found_twist', 0)) == 1:
+        events.append(('finds_twist', cfg.get('participates_in_summit_pts', 3),
+                       'Found twist advantage'))
+
     # End game
     if int(row['received_jury_vote']) == 1:
         events.append(('jury_vote', cfg['jury_vote_pts'],
