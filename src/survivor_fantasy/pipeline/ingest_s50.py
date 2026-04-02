@@ -48,6 +48,7 @@ EPISODES = [
     (3, 'Did You Vote For a Swap?', '2026-03-11', True,  20, 19),
     (4, 'Knife to the Heart',       '2026-03-18', False, 19, 18),
     (5, 'Open Wounds',              '2026-03-25', False, 19, 17),
+    (6, 'The Blood Moon',           '2026-04-01', True, 17, 14),
 ]
 
 # S50 tribe configurations
