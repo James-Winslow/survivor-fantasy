@@ -9,24 +9,24 @@ Usage:
 import subprocess
 import csv
 from pathlib import Path
-from datetime import datetime, timezone
+from datetime import datetime
 
-# ── Config ────────────────────────────────────────────────────────────────────
+# ── Config ───────────────────────────────────────────────────────────────────
 
 EPISODES = [
-    (1,  'Epic Party',              '2026-02-25'),
-    (2,  'Therapy Carousel',        '2026-03-04'),
-    (3,  'Did You Vote For a Swap?','2026-03-11'),
-    (4,  'Knife to the Heart',      '2026-03-18'),
-    (5,  'Open Wounds',             '2026-03-25'),
-    (6,  'The Blood Moon',          '2026-04-01'),
-    (7,  'TBD',                     '2026-04-08'),
-    (8,  'TBD',                     '2026-04-15'),
-    (9,  'TBD',                     '2026-04-22'),
-    (10, 'TBD',                     '2026-04-29'),
-    (11, 'TBD',                     '2026-05-06'),
-    (12, 'TBD',                     '2026-05-13'),
-    (13, 'TBD',                     '2026-05-20'),
+    (1,  'Epic Party',                          '2026-02-25'),
+    (2,  'Therapy Carousel',                    '2026-03-04'),
+    (3,  'Did You Vote For a Swap?',            '2026-03-11'),
+    (4,  'Knife to the Heart',                  '2026-03-18'),
+    (5,  'Open Wounds',                         '2026-03-25'),
+    (6,  'The Blood Moon',                      '2026-04-01'),
+    (7,  "That's Not How I Play Survivor",      '2026-04-08'),
+    (8,  'TBD',                                 '2026-04-15'),
+    (9,  'TBD',                                 '2026-04-22'),
+    (10, 'TBD',                                 '2026-04-29'),
+    (11, 'TBD',                                 '2026-05-06'),
+    (12, 'TBD',                                 '2026-05-13'),
+    (13, 'TBD',                                 '2026-05-20'),
 ]
 
 EVENTS_CSV   = Path('data/season50/events.csv')
@@ -75,7 +75,7 @@ def dashboard_last_push():
         return None, None
     hash_msg = log.split(' ', 1)
     msg = hash_msg[1] if len(hash_msg) > 1 else ''
-    date = git(f'log -1 --format=%ci docs/buffs.html')
+    date = git('log -1 --format=%ci docs/buffs.html')
     if date:
         date = date[:10]
     return date, msg
@@ -90,20 +90,32 @@ def latest_starters_episode():
     except Exception:
         return None
 
-# ── Colors ───────────────────────────────────────────────────────────────────
+def remaining_survivors():
+    """Read season_state to get eliminated count."""
+    try:
+        import duckdb
+        con = duckdb.connect(str(DB_PATH))
+        elim = con.execute(
+            "SELECT COUNT(*) FROM season_state WHERE season_id=50 AND key='eliminated'"
+        ).fetchone()[0]
+        con.close()
+        return 24 - elim
+    except Exception:
+        return None
 
-G  = '\033[92m'   # green
-Y  = '\033[93m'   # yellow
-R  = '\033[91m'   # red
-B  = '\033[96m'   # cyan/blue
-DIM = '\033[2m'
+# ── Colors ────────────────────────────────────────────────────────────────────
+
+G    = '\033[92m'
+Y    = '\033[93m'
+R    = '\033[91m'
+B    = '\033[96m'
+DIM  = '\033[2m'
 BOLD = '\033[1m'
-END = '\033[0m'
+END  = '\033[0m'
 
-def ok(s):    return f'{G}✓ {s}{END}'
-def warn(s):  return f'{Y}⚠ {s}{END}'
-def err(s):   return f'{R}✗ {s}{END}'
-def info(s):  return f'{B}{s}{END}'
+def ok(s):   return f'{G}✓ {s}{END}'
+def warn(s): return f'{Y}⚠ {s}{END}'
+def err(s):  return f'{R}✗ {s}{END}'
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
@@ -113,8 +125,8 @@ def main():
     print()
 
     # Git state
-    branch   = git('branch --show-current') or '?'
-    ahead    = git('rev-list --count @{u}..HEAD 2>/dev/null') or '0'
+    branch      = git('branch --show-current') or '?'
+    ahead       = git('rev-list --count @{u}..HEAD 2>/dev/null') or '0'
     last_commit = git('log -1 --format="%h %s (%ci)"') or '?'
     print(f'  {DIM}branch:{END}      {branch}')
     print(f'  {DIM}last commit:{END} {last_commit[:80]}')
@@ -125,14 +137,17 @@ def main():
     print()
 
     # Episode state
-    aired = latest_episode_aired()
-    ep_in_events = latest_episode_in_events()
+    aired          = latest_episode_aired()
+    ep_in_events   = latest_episode_in_events()
     dash_date, dash_msg = dashboard_last_push()
     ep_in_starters = latest_starters_episode()
+    remaining      = remaining_survivors()
 
     if aired:
         ep_num, ep_title, ep_date = aired
         print(f'  {DIM}latest aired:{END}    Ep{ep_num} "{ep_title}" ({ep_date})')
+        if remaining is not None:
+            print(f'  {DIM}survivors left:{END}  {remaining} of 24 remaining in game')
     else:
         print(f'  {DIM}latest aired:{END}    none yet')
 
@@ -142,7 +157,7 @@ def main():
         else:
             print(f'  {err(f"events.csv only through ep{ep_in_events} — ep{ep_num} data missing!")}')
     else:
-        print(f'  {err("events.csv not found — data/ directory may be missing")}')
+        print(f'  {err("events.csv not found")}')
 
     if ep_in_starters:
         if ep_in_starters >= ep_num:
@@ -179,18 +194,29 @@ def main():
 
     print()
 
+    # Next episode info
+    next_eps = [(n,t,d) for n,t,d in EPISODES
+                if datetime.strptime(d,'%Y-%m-%d').date() > datetime.now().date()]
+    if next_eps:
+        nn, nt, nd = next_eps[0]
+        print(f'  {DIM}next episode:{END}    Ep{nn} "{nt}" airs {nd}')
+        print()
+
     # Actions needed
     actions = []
     if not EVENTS_CSV.exists():
-        actions.append('Create data/season50/ and copy events.csv from other machine')
+        actions.append('Copy events.csv from other machine via Google Drive')
     elif ep_in_events and ep_in_events < ep_num:
         actions.append(f'Add ep{ep_num} rows to data/season50/events.csv')
         actions.append(f'Add ep{ep_num} to EPISODES list in ingest_s50.py')
     if not ep_in_starters or ep_in_starters < ep_num:
-        actions.append(f'Run console script on tribal-council.com for ep{ep_num} starters')
-        actions.append(f'Append output to data/season50/starters.csv')
-    if dash_date and dash_date < ep_date:
-        actions.append('Run pipeline: ingest_s50.py → scorer.py → publish.py')
+        actions.append(f'Run console script on tc.com league page for ep{ep_num} starters')
+        actions.append(f'python scripts\\batch_starters.py --episode {ep_num} --league FJV')
+        actions.append(f'python scripts\\batch_starters.py --episode {ep_num} --league Buffs')
+    if not dash_date or dash_date < ep_date:
+        actions.append('python src/survivor_fantasy/pipeline/ingest_s50.py')
+        actions.append('python src/survivor_fantasy/pipeline/scorer.py')
+        actions.append('python src/survivor_fantasy/pipeline/publish.py')
         actions.append('git add docs/buffs.html docs/fjv.html && git commit && git push')
 
     if actions:
