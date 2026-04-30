@@ -49,6 +49,7 @@ EPISODES = [
     (4, 'Knife to the Heart',       '2026-03-18', False, 19, 18),
     (5, 'Open Wounds',              '2026-03-25', False, 19, 17),
     (6, 'The Blood Moon',           '2026-04-01', True, 17, 14),
+    (7, 'That\'s Not How I Play Survivor', '2026-04-08', False, 14, 13),
 ]
 
 # S50 tribe configurations
