@@ -50,6 +50,12 @@ EPISODES = [
     (5, 'Open Wounds',              '2026-03-25', False, 19, 17),
     (6, 'The Blood Moon',           '2026-04-01', True, 17, 14),
     (7, 'That\'s Not How I Play Survivor', '2026-04-08', False, 14, 13),
+    (8,  'Double the Fun, Double the Demise', '2026-04-15', False, 13, 11),
+    (9,  'I Deserve All of This',             '2026-04-22', False, 11, 10),
+    (10, 'A Side Dish of Chaos',              '2026-04-29', False, 10,  9),
+    (11, 'Everyone Will Be Shooketh!',        '2026-05-06', False,  9,  7),
+    (12, 'Inconceivable',                     '2026-05-13', False,  7,  5),
+    (13, 'Reverse the Curse',                 '2026-05-20', False,  5,  3)
 ]
 
 # S50 tribe configurations

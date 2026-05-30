@@ -83,7 +83,7 @@ def score_event_row(row: dict, cfg: dict) -> list[tuple[str, int, str]]:
         events.append(('wins_individual_reward', cfg['wins_individual_reward_pts'],
                        'Won individual reward'))
 
-    if int(row['had_individual_immunity']) == 1:
+    if int(row.get('had_individual_immunity', 0)) >= 1:
         events.append(('wins_individual_immunity', cfg['wins_individual_immunity_pts'],
                        'Won individual immunity'))
 
@@ -144,9 +144,10 @@ def score_event_row(row: dict, cfg: dict) -> list[tuple[str, int, str]]:
                        'Found twist advantage'))
 
     # End game
-    if int(row['received_jury_vote']) == 1:
-        events.append(('jury_vote', cfg['jury_vote_pts'],
-                       'Received jury vote'))
+    jury_votes = int(row.get('received_jury_vote', 0))
+    if jury_votes > 0:
+        events.append(('jury_vote', cfg['jury_vote_pts'] * jury_votes,
+                       f'Received {jury_votes} jury votes'))
 
     if int(row['sole_survivor']) == 1:
         events.append(('sole_survivor', cfg['sole_survivor_pts'],
